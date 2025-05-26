@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Final: Reforçar Coneixements</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff7675 0%, #fd79a8 50%, #fdcb6e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2d3436;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, #e17055, #ff7675);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .quiz-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .quiz-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Barra de progrés */
+        .progress-container {
+            background: rgba(255, 255, 255, 0.2);
+            height: 8px;
+            margin-top: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #fdcb6e, #fd79a8);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Contingut del quiz */
+        .quiz-content {
+            padding: 40px;
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            color: #2d3436;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .answer-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #f1f2f6;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            color: #2d3436;
+            font-weight: 500;
+        }
+
+        .answer-btn:hover {
+            border-color: #ff7675;
+            background: rgba(255, 118, 117, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .answer-btn.selected {
+            border-color: #e17055;
+            background: linear-gradient(135deg, rgba(225, 112, 85, 0.1), rgba(255, 118, 117, 0.1));
+        }
+
+        .answer-btn.correct {
+            border-color: #00b894;
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.1), rgba(0, 206, 201, 0.1));
+        }
+
+        .answer-btn.incorrect {
+            border-color: #fd79a8;
+            background: linear-gradient(135deg, rgba(253, 121, 168, 0.1), rgba(253, 203, 110, 0.1));
+        }
+
+        /* Explicació */
+        .explanation {
+            display: none;
+            background: linear-gradient(120deg, rgba(255, 118, 117, 0.15), rgba(253, 203, 110, 0.15));
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border-left: 5px solid #ff7675;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .explanation h4 {
+            color: #e17055;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .explanation p {
+            line-height: 1.6;
+            color: #2d3436;
+        }
+
+        /* Botons de navegació */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #fdcb6e, #fd79a8);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn:disabled {
+            background: #ddd;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Resultats finals */
+        .results-container {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .results-container.show {
+            display: block;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .results-score {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #e17055, #ff7675, #fdcb6e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+
+        .results-message {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            color: #2d3436;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #e17055, #ff7675);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .quiz-container {
+                margin: 10px;
+            }
+
+            .quiz-header {
+                padding: 20px;
+            }
+
+            .quiz-header h1 {
+                font-size: 2rem;
+            }
+
+            .quiz-content {
+                padding: 20px;
+            }
+
+            .question {
+                font-size: 1.1rem;
+            }
+
+            .answer-btn {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1>🎓 Quiz Final: Reforçar Coneixements</h1>
+            <p>Integració de tots els aprenentatges del curs de criança i benestar familiar</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text">
+                <span id="currentQuestion">1</span> de <span id="totalQuestions">20</span> preguntes
+            </div>
+        </div>
+
+        <div class="quiz-content">
+            <!-- Pregunta 1 -->
+            <div class="question-container active" data-question="1">
+                <div class="question">
+                    🏆 Quina actitud has de mantenir després d'acabar aquest curs?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Relaxar-te perquè ja ho has après tot
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Mantenir la inclinació a seguir millorant i arreglant coses que no funcionen
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Aplicar només algunes estratègies de tant en tant
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>És crucial mantenir aquesta inclinació a seguir millorant. Sempre hi ha aspectes en què pots treballar, fins i tot quan sembla que tot està bé. Cal seguir buscant ajuda, llegir, parlar amb altres i escoltar la teva veu interior.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 2 -->
+            <div class="question-container" data-question="2">
+                <div class="question">
+                    📈 Què significa "dos passos endavant, un endarrere" en el context del curs?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Que el curs no ha servit per res
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Que època que retrocedeixis, el que has après ja és teu i està dins teu
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Que sempre aniràs endarrere
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>És normal retrocedir com a humans. Però després de dos passos endavant amb aquest aprenentatge, si retrocedeixes només donaràs un pas endarrere. El que has après ja és teu, està dins teu i pots recuperar-ho.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 3 -->
+            <div class="question-container" data-question="3">
+                <div class="question">
+                    🧅 Com s'ha estructurat el curs segons el document?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        De forma aleatòria sense ordre específic
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        En capes com una cebolla: començant per tu i obrint el cercle cap a l'exterior
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Enfocant-se només en els fills des del principi
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>El curs s'ha estructurat en capes com una cebolla, començant amb les capes interiors (tu), després la parella, després els fills i finalment l'entorn. Primer has de ser forta tu per poder ajudar els altres.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 4 -->
+            <div class="question-container" data-question="4">
+                <div class="question">
+                    💪 Quina va ser l'enfocament de la primera setmana del curs?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Només els problemes de comportament dels fills
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        La teva fortalesa: entendre que ets la prioritat i el pilar de la família
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Com organitzar millor la casa
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>La primera setmana es va centrar en la teva fortalesa, entenent que ets el més important, el pilar de la família. Si tu no estàs bé, el teu entorn ho patirà. Cuidar-te és també una forma de donar als altres.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 5 -->
+            <div class="question-container" data-question="5">
+                <div class="question">
+                    👑 Quina va ser la clau de la segona setmana sobre autoritat?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Aprendre a cridar més fort als fills
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Creure't que ets la capitana que guia el vaixell sense càstigs ni amenaces
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Deixar que els fills prenguin totes les decisions
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>El més important és creure't que ets la capitana. Quan tu estàs en el teu lloc de lideratge, és més fàcil guiar la resta de la família sense necessitat de càstigs, crits o amenaces.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 6 -->
+            <div class="question-container" data-question="6">
+                <div class="question">
+                    ❤️ Quina és la clau més important dels cinc pilars fonamentals?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Elegir l'amor cap a tu mateixa, la parella i els fills
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Ser perfecta en tot moment
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Tenir sempre la raó en les discussions
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: A</h4>
+                    <p>Elegir l'amor és potser el més important: cap a tu (escoltant prioritats, necessitats), cap a la parella (buscant solucions junts) i cap als fills (tractant-los des de l'amor). Elegir l'amor enforteix la família.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 7 -->
+            <div class="question-container" data-question="7">
+                <div class="question">
+                    🧭 Per què és important escoltar la teva intuïció?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Perquè sempre té raó en tot
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Perquè aquesta petita veu interna et guia malgrat el soroll extern
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Només cal escoltar-la quan convé
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Cal prestar atenció a aquesta petita veu interna malgrat el soroll extern de l'estrès, obligacions i opinions alienes. Aquesta veu et guia. Escriure les intuïcions ajuda a ancorar-les i entendre-les.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 8 -->
+            <div class="question-container" data-question="8">
+                <div class="question">
+                    🌿 Què significa "simplificar la teva vida" segons els pilars?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Tenir més activitats i coses per mantenir-se ocupat
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Exigir-te menys, tenir menys activitats i coses, buscar connexió i bons moments
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Viure exactament com la societat espera
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Simplificar significa exigir-te menys a tu i als altres, tenir menys activitats i coses, buscar una dimensió més humana. Crear una vida senzilla que, en lloc d'excés, t'ompli de connexió, carinyo i bons moments.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 9 -->
+            <div class="question-container" data-question="9">
+                <div class="question">
+                    ✨ Com has de veure la imperfecció segons el cinquè pilar?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Com un fracàs total que s'ha d'evitar
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Com alguna cosa estupenda: ni tu, ni la teva vida sou perfectes i està bé així
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Com una excusa per no millorar mai
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>No ets perfecta i és estupend. Ni tu, ni la teva vida, ni la parella, ni els fills sou perfectes. Sou prou bons i teniu una vida prou bona. La imperfecció és humana i ensenya lliçons valuoses.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 10 -->
+            <div class="question-container" data-question="10">
+                <div class="question">
+                    🗣️ Quin tipus de converses has de tenir amb la teva parella per dissenyar la vostra vida?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Només sobre aspectes pràctics i logística
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Sobre desitjos interns que afecten la vostra vida, no només lo pràctic
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Només quan hi ha problemes greus
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Cal tenir converses sobre els desitjos interns que afecten la vostra vida (horari flexible, més temps en família), no només el pràctic. Sou vosaltres qui heu de dissenyar la vostra pròpia vida i prioritats.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 11 -->
+            <div class="question-container" data-question="11">
+                <div class="question">
+                    📔 Quin és el propòsit principal del quadern personal segons els sistemes de suport?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Només per anotar tasques pendents
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Processar pensaments, ordenar sentiments i visualitzar el "paisatge" vital
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Escriure només quan estàs enfadada
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>El quadern és per processar pensaments, ordenar sentiments i visualitzar el teu "paisatge" vital per poder actuar. Inclou seccions per intuïcions, observacions, preocupacions i determinacions.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 12 -->
+            <div class="question-container" data-question="12">
+                <div class="question">
+                    💡 Per què és important anotar les intuïcions al quadern?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Perquè sempre són correctes al 100%
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Perquè escriure'ls dona importància, permet que germinin i ajuda a veure amb claredat
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Només per omplir pàgines del quadern
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Escriure els pensaments breus i fugaços els dona importància, els permet germinar i t'ajuda a veure amb claredat i escoltar-te. Rellegir-les pot reviure el sentiment i confirmar si necessiten treball.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 13 -->
+            <div class="question-container" data-question="13">
+                <div class="question">
+                    👁️ Què signifiquen les "observacions" en el context del quadern?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Jutjar constantment el comportament dels altres
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Observar interaccions familiars per entendre necessitats i aprendre noves maneres de fer
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Criticar tot el que fan malament
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Es tracta d'observar les interaccions i reaccions dels membres de la família per entendre les necessitats dels altres i aprendre com fer les coses d'una altra manera. Pots tenir subapartats per diferents persones.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 14 -->
+            <div class="question-container" data-question="14">
+                <div class="question">
+                    📅 Quins tipus de calendaris recomana tenir el document?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Només calendari digital privat
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Calendari de rutines/hàbits visible i calendari diari per cites
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Cap calendari, només memòria
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Cal tenir almenys un calendari visible (rutines/hàbits familiars repetitius) i el calendari diari per cites puntuals. Els calendaris ajuden que els compromisos formin part del paisatge familiar.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 15 -->
+            <div class="question-container" data-question="15">
+                <div class="question">
+                    💭 Què són els mantras familiars segons els recordatoris visuals?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Cançons que canta la família
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Frases curtes i potents que defineixen valors o recordatoris familiars
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Normes de càstig per als nens
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Els mantras són frases curtes i potents que defineixen valors o recordatoris, com "En aquesta família tots recollim la taula" o "Sóc la meva prioritat". Es col·loquen prop del lloc on actuen.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 16 -->
+            <div class="question-container" data-question="16">
+                <div class="question">
+                    📱 Com pots usar les alarmes del mòbil segons el document?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Només per despertar-se al matí
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Per recordar accions concretes o canviar l'estat mental en moments difícils
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Per interrompre constantment les activitats
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Les alarmes són útils per recordar accions concretes o per canviar l'estat mental en moments difícils, com una alarma abans de recollir els nens per preparar-te mentalment.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 17 -->
+            <div class="question-container" data-question="17">
+                <div class="question">
+                    🔍 Què significa "escanejar la teva vida setmanalment"?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Buscar problemes constantment per queixar-se
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Revisar conscientment com va la vida per veure què "chirria" o necessita atenció
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Ignorar tots els problemes que sorgeixin
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>És una revisió conscient de com va la vida setmanalment per veure si hi ha alguna cosa que necessita atenció, on hi ha "forats" que cal cuidar dins la normalitat del dia a dia.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 18 -->
+            <div class="question-container" data-question="18">
+                <div class="question">
+                    🌅 Quin exercici recomana per visualitzar la vida que vols?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Copiar exactament la vida d'algú altre
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Imaginar la teva casa ideal i un dia normal òptim per reflexionar sobre què vols
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        No cal visualitzar res, només deixar-se portar
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Imaginar la vida que vols tenir: com vols que sigui casa teva, com facilita la vida que desitges. Imaginar un dia normal i pensar què el faria òptim. Reflexionar sobre això t'acosta a aconseguir-ho.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 19 -->
+            <div class="question-container" data-question="19">
+                <div class="question">
+                    ⚙️ Per què necessites sistemes que recolzin la teva voluntat?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Perquè la voluntat sola no és suficient per mantenir canvis duradors
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Per afermar tot l'après i assegurar que els canvis romanguin
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Només per complicar més les coses
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Els sistemes (quadern, calendaris, recordatoris) t'ajuden a afermar tot l'après i assegurar que aquests canvis romanguin. Et permeten no perdre't i mantenir-te en el camí que t'has marcat.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 20 -->
+            <div class="question-container" data-question="20">
+                <div class="question">
+                    ✨ Quin és el missatge final més important del curs?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Que ja no cal seguir aprenent res més
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Que el que has après ja és teu, està dins teu, i pots utilitzar-ho sempre
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Que només funciona si ho fas perfecte
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>El més important és que el que has après ja és teu, està dins teu. Encara que a vegades actuïs sense pensar-hi, ho tens. Pots consultar materials, recordar estratègies i tornar a posar-les en marxa quan ho necessitis.</p>
+                </div>
+            </div>
+
+            <!-- Botons de navegació -->
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="previousQuestion()" disabled>Anterior</button>
+                <button class="nav-btn" id="nextBtn" onclick="nextQuestion()" disabled>Següent</button>
+            </div>
+        </div>
+
+        <!-- Resultats finals -->
+        <div class="results-container" id="resultsContainer">
+            <h2>🎉 Quiz Final Completat!</h2>
+            <div class="results-score" id="finalScore">0/20</div>
+            <div class="results-message" id="resultsMessage"></div>
+            <button class="restart-btn" onclick="restartQuiz()">Tornar a Començar</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestionIndex = 0;
+        let totalQuestions = 20;
+        let score = 0;
+        let answers = [];
+        let questionAnswered = false;
+
+        // Respostes correctes
+        const correctAnswers = {
+            1: 'b', 2: 'b', 3: 'b', 4: 'b', 5: 'b',
+            6: 'a', 7: 'b', 8: 'b', 9: 'b', 10: 'b',
+            11: 'b', 12: 'b', 13: 'b', 14: 'b', 15: 'b',
+            16: 'b', 17: 'b', 18: 'b', 19: 'b', 20: 'b'
+        };
+
+        // Inicialitzar quiz
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('totalQuestions').textContent = totalQuestions;
+            updateProgress();
+            setupAnswerButtons();
+        });
+
+        function setupAnswerButtons() {
+            const answerBtns = document.querySelectorAll('.answer-btn');
+            answerBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (questionAnswered) return;
+                    
+                    selectAnswer(this);
+                });
+            });
+        }
+
+        function selectAnswer(selectedBtn) {
+            const questionContainer = document.querySelector('.question-container.active');
+            const questionNum = parseInt(questionContainer.dataset.question);
+            const selectedAnswer = selectedBtn.dataset.answer;
+            const correctAnswer = correctAnswers[questionNum];
+            
+            // Marcar com respondida
+            questionAnswered = true;
+            
+            // Deshabilitar tots els botons
+            const answerBtns = questionContainer.querySelectorAll('.answer-btn');
+            answerBtns.forEach(btn => {
+                btn.style.pointerEvents = 'none';
+                
+                if (btn.dataset.answer === correctAnswer) {
+                    btn.classList.add('correct');
+                } else if (btn === selectedBtn && selectedAnswer !== correctAnswer) {
+                    btn.classList.add('incorrect');
+                }
+            });
+            
+            // Guardar resposta
+            answers[questionNum] = selectedAnswer;
+            
+            // Incrementar puntuació si és correcta
+            if (selectedAnswer === correctAnswer) {
+                score++;
+            }
+            
+            // Mostrar explicació
+            const explanation = questionContainer.querySelector('.explanation');
+            explanation.classList.add('show');
+            
+            // Habilitar botó següent
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < totalQuestions - 1) {
+                // Ocultar pregunta actual
+                document.querySelector('.question-container.active').classList.remove('active');
+                
+                // Mostrar següent pregunta
+                currentQuestionIndex++;
+                const nextQuestion = document.querySelector(`[data-question="${currentQuestionIndex + 1}"]`);
+                nextQuestion.classList.add('active');
+                
+                // Reset estat
+                questionAnswered = false;
+                document.getElementById('nextBtn').disabled = true;
+                document.getElementById('prevBtn').disabled = false;
+                
+                updateProgress();
+                
+                // Configurar nous botons de resposta
+                setTimeout(() => {
+                    const newAnswerBtns = nextQuestion.querySelectorAll('.answer-btn');
+                    newAnswerBtns.forEach(btn => {
+                        btn.style.pointerEvents = 'auto';
+                        btn.classList.remove('selected', 'correct', 'incorrect');
+                    });
+                }, 100);
+            } else {
+                // Mostrar resultats
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                // Ocultar pregunta actual
+                document.querySelector('.question-container.active').classList.remove('active');
+                
+                // Mostrar pregunta anterior
+                currentQuestionIndex--;
+                const prevQuestion = document.querySelector(`[data-question="${currentQuestionIndex + 1}"]`);
+                prevQuestion.classList.add('active');
+                
+                updateProgress();
+                updateNavButtons();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+        }
+
+        function updateNavButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            
+            // Comprobar si la pregunta actual ha estat respondida
+            const currentQuestion = currentQuestionIndex + 1;
+            const hasAnswered = answers[currentQuestion] !== undefined;
+            document.getElementById('nextBtn').disabled = !hasAnswered;
+        }
+
+        function showResults() {
+            // Ocultar contingut del quiz
+            document.querySelector('.quiz-content').style.display = 'none';
+            
+            // Mostrar resultats
+            const resultsContainer = document.getElementById('resultsContainer');
+            resultsContainer.classList.add('show');
+            
+            // Actualitzar puntuació
+            document.getElementById('finalScore').textContent = `${score}/${totalQuestions}`;
+            
+            // Missatge segons puntuació
+            let message = '';
+            const percentage = (score / totalQuestions) * 100;
+            
+            if (percentage >= 90) {
+                message = '🎓 Excel·lent! Has integrat perfectament tots els aprenentatges del curs. Estàs preparat per continuar aquest hermós viatge de creixement personal i familiar. El que has après ja és teu!';
+            } else if (percentage >= 75) {
+                message = '🌟 Molt bé! Domines la majoria dels conceptes clau. Recorda: dos passos endavant, un endarrere. Segueix aplicant els cinc pilars en el teu dia a dia!';
+            } else if (percentage >= 60) {
+                message = '💪 Bona feina! Tens una base sòlida dels aprenentatges. Revisa els materials del curs i segueix practicant els sistemes de suport. Tu pots!';
+            } else {
+                message = '🌱 Aquesta és només una primera aproximació. El creixement és un procés continu. Revisa els continguts, practica amb paciència i recorda: elegeix sempre l\'amor!';
+            }
+            
+            document.getElementById('resultsMessage').textContent = message;
+        }
+
+        function restartQuiz() {
+            // Reset variables
+            currentQuestionIndex = 0;
+            score = 0;
+            answers = [];
+            questionAnswered = false;
+            
+            // Ocultar resultats
+            document.getElementById('resultsContainer').classList.remove('show');
+            
+            // Mostrar contingut del quiz
+            document.querySelector('.quiz-content').style.display = 'block';
+            
+            // Reset preguntes
+            document.querySelectorAll('.question-container').forEach((container, index) => {
+                container.classList.remove('active');
+                if (index === 0) {
+                    container.classList.add('active');
+                }
+                
+                // Reset botons de resposta
+                container.querySelectorAll('.answer-btn').forEach(btn => {
+                    btn.style.pointerEvents = 'auto';
+                    btn.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                // Ocultar explicacions
+                container.querySelector('.explanation').classList.remove('show');
+            });
+            
+            // Reset navegació
+            document.getElementById('prevBtn').disabled = true;
+            document.getElementById('nextBtn').disabled = true;
+            
+            updateProgress();
+        }
+    </script>
+</body>
+</html>

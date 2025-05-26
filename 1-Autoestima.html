@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia d'Estudi: Autocura i Connexió Interna</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Navegació lateral */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar h2 {
+            color: white;
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 15px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 8px;
+        }
+
+        .nav-menu a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
+
+        .nav-menu a.active {
+            background: rgba(255,255,255,0.3);
+            font-weight: bold;
+        }
+
+        /* Barra de progrés de lectura */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 300px;
+            right: 0;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            z-index: 999;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        /* Contingut principal */
+        .main-content {
+            margin-left: 300px;
+            padding: 40px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            font-weight: 300;
+        }
+
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 1.3em;
+            font-style: italic;
+        }
+
+        /* Seccions */
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            scroll-margin-top: 20px;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+            padding-left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section h3 {
+            color: #34495e;
+            font-size: 1.6em;
+            margin: 25px 0 15px 0;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+
+        .section h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin: 20px 0 10px 0;
+        }
+
+        /* Caixetes destacades */
+        .highlight-box {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid #e74c3c;
+            position: relative;
+        }
+
+        .highlight-box::before {
+            content: "🌟";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: white;
+            padding: 5px 10px;
+            border-radius: 50%;
+            font-size: 1.2em;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid #3498db;
+            position: relative;
+        }
+
+        .tip-box::before {
+            content: "💡";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: white;
+            padding: 5px 10px;
+            border-radius: 50%;
+            font-size: 1.2em;
+        }
+
+        .steps-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid #f39c12;
+            position: relative;
+        }
+
+        .steps-box::before {
+            content: "🎯";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: white;
+            padding: 5px 10px;
+            border-radius: 50%;
+            font-size: 1.2em;
+        }
+
+        /* Llistes */
+        .section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .section li {
+            margin-bottom: 12px;
+            padding-left: 30px;
+            position: relative;
+            color: #555;
+        }
+
+        .section li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #2ecc71;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* Passos numerats */
+        .steps-list {
+            counter-reset: step-counter;
+        }
+
+        .steps-list li {
+            counter-increment: step-counter;
+            padding-left: 50px;
+            margin-bottom: 20px;
+        }
+
+        .steps-list li:before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        /* Taula comparativa */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .comparison-table td {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        /* Botó de tornada a dalt */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .progress-bar {
+                left: 0;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .section {
+                padding: 25px;
+            }
+
+            .menu-toggle {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                padding: 15px;
+                border-radius: 10px;
+                font-size: 1.2em;
+                cursor: pointer;
+                z-index: 1001;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            }
+        }
+
+        .menu-toggle {
+            display: none;
+        }
+
+        /* Animacions */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Botó menú mòbil -->
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+    <!-- Barra de progrés -->
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- Navegació lateral -->
+    <nav class="sidebar" id="sidebar">
+        <h2>📚 Guia d'Estudi</h2>
+        <ul class="nav-menu">
+            <li><a href="#concepte-fonamental" onclick="setActive(this)">🌳 Concepte Fonamental</a></li>
+            <li><a href="#cinc-passos" onclick="setActive(this)">🎯 Els 5 Passos</a></li>
+            <li><a href="#pas1" onclick="setActive(this)">&nbsp;&nbsp;&nbsp;🤝 1. Pedir Ajuda</a></li>
+            <li><a href="#pas2" onclick="setActive(this)">&nbsp;&nbsp;&nbsp;📉 2. Rebaixar Exigències</a></li>
+            <li><a href="#pas3" onclick="setActive(this)">&nbsp;&nbsp;&nbsp;😊 3. Fer Coses que t'Agradin</a></li>
+            <li><a href="#pas4" onclick="setActive(this)">&nbsp;&nbsp;&nbsp;🔄 4. Canviar Prioritats</a></li>
+            <li><a href="#pas5" onclick="setActive(this)">&nbsp;&nbsp;&nbsp;⭐ 5. Establir Prioritat</a></li>
+            <li><a href="#connexio" onclick="setActive(this)">🧘 Connexió amb Tu Mateixa</a></li>
+            <li><a href="#pensaments" onclick="setActive(this)">⏰ Gestió de Pensaments</a></li>
+            <li><a href="#jutjaments" onclick="setActive(this)">💪 Jutjaments i Autoestima</a></li>
+            <li><a href="#imperfeccio" onclick="setActive(this)">🌟 Acceptar Imperfecció</a></li>
+            <li><a href="#natura" onclick="setActive(this)">🌿 Natura i Cos</a></li>
+            <li><a href="#passat" onclick="setActive(this)">🕊️ Pau amb el Passat</a></li>
+            <li><a href="#missatge-final" onclick="setActive(this)">💝 Missatge Final</a></li>
+        </ul>
+    </nav>
+
+    <!-- Contingut principal -->
+    <main class="main-content">
+        <div class="header">
+            <h1>📖 Guia d'Estudi: Autocura i Connexió Interna</h1>
+            <div class="subtitle">Resum complet dels conceptes més importants per estudiar i repassar</div>
+        </div>
+
+        <!-- Secció 1: Concepte Fonamental -->
+        <section id="concepte-fonamental" class="section">
+            <h2>🌳 CONCEPTE FONAMENTAL: La Metàfora de l'Arbre</h2>
+            
+            <div class="highlight-box">
+                <h4>Idea Central</h4>
+                <p><strong>Tu ets l'arbre que sostén tot</strong> (família, feina, responsabilitats). Si no et cuides, l'arbre es trenca i tot es ve avall.</p>
+            </div>
+
+            <h3>Conseqüències de no cuidar-se</h3>
+            <ul>
+                <li>Pèrdua de control i mal humor</li>
+                <li>Menys paciència i connexió familiar</li>
+                <li>Més conflictes i discussions</li>
+                <li>Incapacitat per gaudir de la vida</li>
+                <li>Efecte dominó que afecta tota la família</li>
+            </ul>
+
+            <div class="tip-box">
+                <h4>Reflexió Important</h4>
+                <p>Aquest sufriment no és només teu, ho pateixen també els teus éssers estimats. La bona notícia és que, normalment, les coses poden canviar.</p>
+            </div>
+        </section>
+
+        <!-- Secció 2: Els 5 Passos -->
+        <section id="cinc-passos" class="section">
+            <h2>🎯 ELS 5 PASSOS D'IMPLEMENTACIÓ</h2>
+            
+            <div class="steps-box">
+                <p>Per passar del reconeixement a l'acció, segueix aquests 5 passos estructurats que et permetran implementar canvis reals en la teva vida.</p>
+            </div>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Pas</th>
+                        <th>Objectiu</th>
+                        <th>Benefici Principal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1. Pedir Ajuda</strong></td>
+                        <td>Delegar responsabilitats</td>
+                        <td>Alliberar temps i energia</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. Rebaixar Exigències</strong></td>
+                        <td>Acceptar imperfecció tolerable</td>
+                        <td>Reduir estrès i pressió</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. Fer Coses que t'Agradin</strong></td>
+                        <td>Planificar temps personal</td>
+                        <td>Recarregar energia i motivació</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4. Canviar Prioritats</strong></td>
+                        <td>Del FER al SER i ESTAR</td>
+                        <td>Millor connexió i benestar</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5. Establir Prioritat</strong></td>
+                        <td>Fer-ho inamovible</td>
+                        <td>Canvi sostenible a llarg termini</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Pas 1 -->
+        <section id="pas1" class="section">
+            <h2>🤝 PAS 1: Pedir Ajuda i Delegar</h2>
+
+            <h3>A qui pots demanar ajuda</h3>
+            <ul>
+                <li><strong>Parella:</strong> distribuir responsabilitats domèstiques</li>
+                <li><strong>Pares:</strong> suport amb els nens o tasques</li>
+                <li><strong>Fills:</strong> responsabilitats adaptades a cada edat</li>
+                <li><strong>Professionals:</strong> neteja, cangur, etc.</li>
+                <li><strong>Altres pares:</strong> transport compartit, intercanvi de cuidats</li>
+            </ul>
+
+            <h3>Com comunicar la necessitat d'ajuda</h3>
+            
+            <div class="highlight-box">
+                <h4>❌ Evita aquests enfocaments:</h4>
+                <p><strong>Victimització:</strong> "No puc més, estic esgotada"</p>
+                <p><strong>Confrontació:</strong> "Tu no fas res mai"</p>
+                <p><strong>Queixa:</strong> "Sempre he de fer-ho tot jo"</p>
+            </div>
+
+            <div class="tip-box">
+                <h4>✅ Millor enfocament:</h4>
+                <p><strong>Exemple:</strong> "Cariño, t'importaria ocupar-te de la cena dos cops per setmana? Així puc tenir un rato per mi"</p>
+                <p>Comunica de manera clara i directa, sense fer sentir culpable l'altre. Es tracta de demanar col·laboració, no d'acusar.</p>
+            </div>
+
+            <h3>Implicar els fills</h3>
+            <ul>
+                <li>Recollir joguines i material escolar</li>
+                <li>Ajudar a posar i treure taula</li>
+                <li>Doblar roba senzilla</li>
+                <li>Cuidar mascotes (segons edat)</li>
+                <li>Preparar el seu esmorzar</li>
+            </ul>
+
+            <div class="steps-box">
+                <h4>Objectiu de la delegació</h4>
+                <p>Que l'altra persona es responsabilitzi de la tasca, no només que t'ajudi esporàdicament. Això pot requerir disciplina, recordatoris i paciència durant el període d'adaptació.</p>
+            </div>
+        </section>
+
+        <!-- Pas 2 -->
+        <section id="pas2" class="section">
+            <h2>📉 PAS 2: Rebaixar les Exigències</h2>
+
+            <h3>Àrees on rebaixar l'autoexigència</h3>
+            <ul>
+                <li>Casa "suficientment" ordenada vs. impecable</li>
+                <li>Menjar senzill alguns dies (fins i tot entrepans saludables)</li>
+                <li>Reduir activitats extraescolars si t'esgoten</li>
+                <li>Ajustar la freqüència de visites familiars</li>
+                <li>Simplificar les compres (setmanals o online)</li>
+                <li>Triar roba que no necessiti planxa</li>
+                <li>Acceptar que no tot estigui perfecte sempre</li>
+            </ul>
+
+            <div class="highlight-box">
+                <h4>🎯 Concepte Clau: Perdona't la Vida</h4>
+                <p>Viu amb menys autoexigència en l'àmbit material. Això no significa exigir-te menys en general, sinó redirigir les teves exigències cap al teu benestar i la connexió familiar.</p>
+            </div>
+
+            <h3>Trobant l'equilibri</h3>
+            <p>No es tracta de viure en el caos absolut, sinó de trobar un punt intermig:</p>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Abans (Perfeccionisme)</th>
+                        <th>Després (Equilibri)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Casa perfecta</td>
+                        <td>Casa funcional i còmoda</td>
+                    </tr>
+                    <tr>
+                        <td>Menjar gourmet cada dia</td>
+                        <td>Alimentació saludable i variada</td>
+                    </tr>
+                    <tr>
+                        <td>Agenda plena d'activitats</td>
+                        <td>Temps per respirar i connectar</td>
+                    </tr>
+                    <tr>
+                        <td>Tot planxat i impecable</td>
+                        <td>Roba neta i presentable</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Pas 3 -->
+        <section id="pas3" class="section">
+            <h2>😊 PAS 3: Fer Almenys Una Cosa que t'Agrada</h2>
+
+            <div class="tip-box">
+                <h4>Planificació intencional</h4>
+                <p>Fer coses que t'agradin requereix intencionalitat i planificació per assegurar que realment passi. No n'hi ha prou amb desitjar-ho.</p>
+            </div>
+
+            <h3>Procés de planificació</h3>
+            <ol class="steps-list">
+                <li><strong>Defineix què vols fer:</strong> gimnàs, lectura, quedar amb amics, temps en parella, hobby creatiu</li>
+                <li><strong>Planifica com ho faràs:</strong> qui cuidarà els nens, quin dia, a quina hora, on</li>
+                <li><strong>Sigues disciplinada:</strong> compleix el compromís amb tu mateixa com si fos una cita important</li>
+                <li><strong>Evita distraccions:</strong> no miris el mòbil durant el teu temps personal</li>
+            </ol>
+
+            <h3>Exemples d'activitats per categories</h3>
+            <ul>
+                <li><strong>Exercici físic:</strong> gimnàs, ioga, córrer, natació, pilates</li>
+                <li><strong>Activitats socials:</strong> quedar amb amics, sopar en parella, grup de lectura</li>
+                <li><strong>Hobbies creatius:</strong> pintura, escriptura, música, manualitats</li>
+                <li><strong>Relaxació:</strong> lectura, bany tranquil, massatge, meditació</li>
+                <li><strong>Aprenentatge:</strong> curs online, idiomes, cuina, fotografia</li>
+            </ul>
+
+            <div class="steps-box">
+                <h4>Clau de l'Èxit</h4>
+                <p>Ser responsable amb el compromís cap a tu mateixa. Tracta aquest temps com una cita important que no es pot cancel·lar. La disciplina és fonamental per crear l'hàbit.</p>
+            </div>
+        </section>
+
+        <!-- Pas 4 -->
+        <section id="pas4" class="section">
+            <h2>🔄 PAS 4: Canviar les Prioritats</h2>
+
+            <div class="highlight-box">
+                <h4>🔄 Transformació Fonamental</h4>
+                <p><strong>Del FER ➔ Al SER i ESTAR</strong></p>
+                <p>De centrar-se en tasques i coses materials a centrar-se en el benestar personal i la connexió amb les persones.</p>
+            </div>
+
+            <h3>Nova escala de prioritats</h3>
+            <ul>
+                <li><strong>Persones > Coses:</strong> Temps de connexió familiar > Casa impecable</li>
+                <li><strong>Benestar > Perfecció:</strong> Estar bé > Fer-ho tot perfecte</li>
+                <li><strong>Qualitat > Quantitat:</strong> Moments significatius > Agenda plena</li>
+                <li><strong>Connexió > Productivitat:</strong> Converses amb fills > Tasques pendents</li>
+            </ul>
+
+            <h3>Exemples pràctics del canvi</h3>
+            <ul>
+                <li>Llegir un conte amb els fills vs. tenir el terra impecable</li>
+                <li>Conversa tranquil·la en parella vs. doblar tota la roba</li>
+                <li>Passeig familiar vs. organitzar armaris</li>
+                <li>Temps per tu mateixa vs. preparar menjar elaborat</li>
+            </ul>
+
+            <div class="tip-box">
+                <h4>💭 Reflexió Important</h4>
+                <p>Quan prioritzes el teu benestar i la connexió, no estàs sent egoísta. Estàs creant les condicions perquè puguis cuidar millor els altres i ser més present.</p>
+            </div>
+        </section>
+
+        <!-- Pas 5 -->
+        <section id="pas5" class="section">
+            <h2>⭐ PAS 5: Establir-ho com a Prioritat</h2>
+
+            <div class="highlight-box">
+                <h4>🎯 Prioritat Inamovible</h4>
+                <p>El pas més difícil és convertir el teu benestar en una prioritat que no es negocia. No és una opció, és una responsabilitat.</p>
+            </div>
+
+            <h3>Principis fonamentals</h3>
+            <ul>
+                <li><strong>És la teva responsabilitat estar bé</strong> - ningú més ho farà per tu</li>
+                <li><strong>La parella també ha d'assumir el seu propi benestar</strong> - suport mutu</li>
+                <li><strong>Crear espais personals per ambdós</strong> - respecte pels temps individuals</li>
+                <li><strong>Fortaleix la relació i la família</strong> - quan tots estan bé, la dinàmica millora</li>
+            </ul>
+
+            <h3>Com implementar-ho</h3>
+            <ul>
+                <li>Estableix horaris fixos per al teu temps personal</li>
+                <li>Comunica clarament les teves necessitats a la família</li>
+                <li>No et sentis culpable per prioritzar-te</li>
+                <li>Crea rutines que incloguin el teu benestar</li>
+                <li>Fes seguiment dels teus progressos</li>
+            </ul>
+
+            <div class="steps-box">
+                <h4>Implementació Gradual</h4>
+                <p>Els canvis són difícils i les persones del teu voltant també necessitaran temps per adaptar-se. Sigues pacient però constant. Dos passos endavant, un endarrere, però sempre avançant.</p>
+            </div>
+        </section>
+
+        <!-- Connexió -->
+        <section id="connexio" class="section">
+            <h2>🧘 CONNEXIÓ AMB TU MATEIXA</h2>
+
+            <div class="tip-box">
+                <h4>Per què és vital connectar amb tu mateixa?</h4>
+                <p>En l'enrenou diari és fàcil perdre's, oblidar qui ets, què vols i quin és el teu camí. Només si et dones espai i temps per saber qui ets, podràs prendre decisions adequades.</p>
+            </div>
+
+            <h3>Moments de silenci</h3>
+            <ul>
+                <li><strong>3-5 minuts per simplement estar:</strong> cafè tranquil, seure al sofà, mirar per la finestra</li>
+                <li><strong>Observar els fills sense intervenir:</strong> veure'ls jugar des de l'umbral d'una porta</li>
+                <li><strong>Moments d'espera:</strong> parada del bus, consulta del metge, porta del col·legi</li>
+                <li><strong>L'avorriment és beneficiós:</strong> activa la creativitat i l'autoconeixement</li>
+            </ul>
+
+            <h3>Desconnexió tecnològica</h3>
+            <ul>
+                <li><strong>Deixar el mòbil en una caixa</strong> al arribar a casa</li>
+                <li><strong>No portar-lo al dormitori</strong> - comprar un despertador tradicional</li>
+                <li><strong>Dia sense tecnologia</strong> per tota la família setmanalment</li>
+                <li><strong>Trajectes curts sense mòbil</strong> (anar a buscar els nens, comprar pa)</li>
+                <li><strong>Espais lliures de tecnologia</strong> a casa (menjador, dormitori)</li>
+            </ul>
+
+            <h3>Buidar la ment apuntant</h3>
+            <div class="steps-box">
+                <h4>Alliberar la càrrega mental</h4>
+                <p>La ment sovint està plena de tasques i recordatoris que t'impedeixen connectar amb tu mateixa. La solució és simple però transformadora: <strong>apunta-ho tot</strong>.</p>
+            </div>
+            <ul>
+                <li>Usa un quadern, el mòbil o calendari al frigorífic</li>
+                <li>Apunta cites, tasques, horaris, dades importants</li>
+                <li>Allibera un pes enorme del cap</li>
+                <li>Permet que la teva veu interior sigui escoltada</li>
+            </ul>
+        </section>
+
+        <!-- Gestió pensaments -->
+        <section id="pensaments" class="section">
+            <h2>⏰ GESTIÓ DELS PENSAMENTS</h2>
+
+            <h3>Tècnica del globus</h3>
+            <div class="tip-box">
+                <h4>🎈 Metàfora del globus</h4>
+                <p>Tendim a estar sempre en el futur: "demà he de...", "a les 3 he de...", "el dissabte vaig a...". El "globus" dels teus pensaments se'n va a altres moments.</p>
+            </div>
+            <ul>
+                <li>Fes un esforç conscient per portar el "globus" de tornada a l'aquí i ara</li>
+                <li>Pots preocupar-te quan sigui el moment de resoldre algo</li>
+                <li>No permetis que la planificació arruïni el teu present</li>
+                <li>Practica estar plenament en el moment actual</li>
+            </ul>
+
+            <h3>Aprendre a esperar</h3>
+            <ul>
+                <li><strong>Moments d'espera com a oportunitats:</strong> en lloc d'omplir-los amb distraccions</li>
+                <li><strong>Alternatives a mirar el mòbil:</strong> observar l'entorn, escoltar sons, estar present</li>
+                <li><strong>Acompanyar els fills:</strong> en moments difícils com crisis, decidir esperar tranquil·lament</li>
+                <li><strong>Practicar la presència:</strong> estar en l'aquí i ara sense jutjar</li>
+            </ul>
+
+            <h3>Mindfulness pràctic</h3>
+            <ul>
+                <li><strong>Prestar atenció al moment present</strong> sense jutjar-lo</li>
+                <li><strong>Aplicar-ho en activitats diàries:</strong> rentar-se dents, menjar, caminar</li>
+                <li><strong>Fer les coses amb consciència</strong> en lloc de pilota automàtic</li>
+                <li><strong>Observar la respiració</strong> i les sensacions del cos</li>
+            </ul>
+        </section>
+
+        <!-- Jutjaments -->
+        <section id="jutjaments" class="section">
+            <h2>💪 GESTIÓ DEL JUTJAMENT I AUTOESTIMA</h2>
+
+            <h3>Sobre els jutjaments dels altres</h3>
+            <div class="tip-box">
+                <h4>🤔 Realitat vs. Percepció</h4>
+                <p>La majoria de persones estan massa ocupades amb els seus propis problemes i fills per estar constantment jutjant-te. Sovint una mirada pot ser de comprensió perquè han passat pel mateix.</p>
+            </div>
+            <ul>
+                <li><strong>No llegeixis la ment dels altres</strong> - no saps què pensen realment</li>
+                <li><strong>Pregunta't si ets tu qui et jutges</strong> - sovint el sentiment prové d'autoexigència interna</li>
+                <li><strong>Si et jutgen, deixa que et jutgin</strong> - la seva opinió no és el teu problema</li>
+                <li><strong>No jutgis els altres</strong> - si jutges constantment, és probable que sentis que et jutgen</li>
+            </ul>
+
+            <h3>Fortalèixer l'autoestima</h3>
+            <div class="highlight-box">
+                <h4>🌟 Ser la teva millor amiga</h4>
+                <p>Estima't, respecta't i accepta't amb les teves imperfeccions. Reconeix les teves qualitats positives. Una autoestima forta et protegeix dels jutjaments externs.</p>
+            </div>
+            <ul>
+                <li><strong>Tracta't amb bondat</strong> - com tractaries una bona amiga</li>
+                <li><strong>Reconeix les teves qualitats</strong> - fes una llista de coses bones que tens</li>
+                <li><strong>Accepta les teves imperfeccions</strong> - formen part de ser humana</li>
+                <li><strong>Celebra els teus èxits</strong> - per petits que siguin</li>
+            </ul>
+
+            <h3>Impacte en les relacions</h3>
+            <p>Fortalecer l'autoestima impactarà positivament en totes les teves relacions:</p>
+            <ul>
+                <li>Relació de parella més equilibrada i autèntica</li>
+                <li>Educació dels fills més serena i segura</li>
+                <li>Relacions socials més genuïnes</li>
+                <li>Menys necessitat d'aprovació externa</li>
+            </ul>
+        </section>
+
+        <!-- Imperfecció -->
+        <section id="imperfeccio" class="section">
+            <h2>🌟 ACCEPTAR LA IMPERFECCIÓ: Ets Suficientment Bona</h2>
+
+            <div class="highlight-box">
+                <h4>🎯 Veritat Fonamental</h4>
+                <p>No hi ha pares perfectes, només pares suficientment bons. I ser "suficientment bona" és meravellós per als teus fills i per a tu.</p>
+            </div>
+
+            <h3>Lliçons que ensenyes sent imperfecta</h3>
+            <ul>
+                <li><strong>A aguantar-se:</strong> quan no els prepares sempre el seu menjar favorit</li>
+                <li><strong>A esperar:</strong> quan no respons immediatament a les seves demandes</li>
+                <li><strong>Que ningú és perfecte:</strong> quan t'enfades i després fas les paus</li>
+                <li><strong>A generar recursos propis:</strong> quan no jugues sempre amb ells</li>
+                <li><strong>A valdre's per si mateixos:</strong> quan no atens tots els seus desitjos</li>
+                <li><strong>Que les emocions són humanes:</strong> quan mostres vulnerabilitat</li>
+            </ul>
+
+            <h3>Reconeix la teva entrega</h3>
+            <div class="steps-box">
+                <h4>Autocompasió</h4>
+                <p>No et castiguir pels errors. Reconeix la teva dedicació, valora el teu amor i esforç. Accepta que fer-ho bé no significa fer-ho perfecte.</p>
+            </div>
+            <ul>
+                <li>Perdona't quan les coses no surten com esperaves</li>
+                <li>Reconeix tot l'amor i dedicació que dones cada dia</li>
+                <li>Valora els moments bons, no només els difícils</li>
+                <li>Recorda que els teus fills t'estimen tal com ets</li>
+            </ul>
+        </section>
+
+        <!-- Natura i cos -->
+        <section id="natura" class="section">
+            <h2>🌿 CONNEXIÓ AMB NATURA I COS</h2>
+
+            <h3>La natura com a aliada</h3>
+            <div class="tip-box">
+                <h4>🌳 No cal un bosc imponent</h4>
+                <p>Pot ser un parc proper, un passeig més verd, tenir plantes a casa. La natura t'ajuda a trobar pau i equilibri, facilitant la connexió amb tu mateixa.</p>
+            </div>
+            <ul>
+                <li>Passejos per parcs propers o zones verdes</li>
+                <li>Triar rutes més verdes en el dia a dia</li>
+                <li>Tenir plantes a casa i cuidar-les</li>
+                <li>Temps a l'aire lliure sempre que sigui possible</li>
+                <li>Activitats familiars en la natura</li>
+            </ul>
+
+            <h3>Connectar amb el teu cos</h3>
+            <div class="steps-box">
+                <h4>💪 Moure el cos és essencial</h4>
+                <p>Encara que sigui difícil trobar temps o motivació, és vital per al teu benestar físic i mental. Mima el teu cos i reconeix les seves necessitats.</p>
+            </div>
+            <ul>
+                <li><strong>Si no t'agrada el gimnàs:</strong> camina més, baixa abans del transport públic</li>
+                <li><strong>Aprofita el temps dels fills:</strong> si van a la piscina, fes uns llargs; si patinen, uneix-te</li>
+                <li><strong>Exercici familiar:</strong> bici, patins, saltar a la corda, futbol al parc</li>
+                <li><strong>Balla:</strong> a casa amb els fills, amb la parella o sortir a ballar</li>
+                <li><strong>Activitats aquàtiques:</strong> natació, aqua aeròbics</li>
+            </ul>
+        </section>
+
+        <!-- Passat -->
+        <section id="passat" class="section">
+            <h2>🕊️ FER LES PAUS AMB EL PASSAT</h2>
+
+            <h3>Reconèixer el teu passat</h3>
+            <div class="tip-box">
+                <h4>🔍 Obstacles interns</h4>
+                <p>Els obstacles que t'impedeixen cuidar-te sovint provenen d'experiències passades: infàncies dures, falta d'afecte, experiències traumàtiques o models poc clars.</p>
+            </div>
+
+            <h3>Procés de sanació</h3>
+            <ol class="steps-list">
+                <li><strong>Reconeix:</strong> les experiències difícils que et poden estar limitant</li>
+                <li><strong>Accepta:</strong> que va passar, però que ara estàs en un moment diferent</li>
+                <li><strong>No t'ancloris:</strong> en el passat, però tampoc l'oblidis completament</li>
+                <li><strong>Pren les regnes:</strong> decideix conscientment com vols ser ara</li>
+            </ol>
+
+            <div class="highlight-box">
+                <h4>🌱 Construeix-te a Ti Mateixa</h4>
+                <p>Si no vas tenir un model clar, decideix conscientment com vols ser i construeix-te basant-te en el teu propi criteri, no com a reacció al passat.</p>
+            </div>
+
+            <h3>Acceptació integral</h3>
+            <ul>
+                <li>Accepta les teves "imperfeccions" (mal geni ocasional, moments de falta de control)</li>
+                <li>Reconeix i accepta totes les coses bones que tens</li>
+                <li>Fortaleeix l'autoacceptació i autoestima</li>
+                <li>Recorda que això impactarà positivament totes les teves relacions</li>
+            </ul>
+
+            <div class="steps-box">
+                <h4>🎵 Escolta la teva Veu Interior</h4>
+                <p>La teva intuïció és com un semàfor que et guia. Requereix silenci i desconnexió per escoltar-la. Amplifica-la i fes-li cas.</p>
+            </div>
+        </section>
+
+        <!-- Missatge final -->
+        <section id="missatge-final" class="section">
+            <h2>💝 MISSATGE FINAL</h2>
+            
+            <div class="highlight-box">
+                <h4>🌟 Recorda Sempre</h4>
+                <p><strong>"Pensa en tu. Riega't. Cuida't. Descansa. Tu importes."</strong></p>
+                <p>Si tu estàs bé, els altres també ho estaran.</p>
+            </div>
+
+            <h3>Sobre els canvis</h3>
+            <ul>
+                <li>Els canvis són difícils i impliquen els altres</li>
+                <li>Necessitaran temps per acostumar-se a les noves rutines</li>
+                <li>El procés no és lineal (dos passos endavant, un endarrere)</li>
+                <li>Amb perseverància, avançaràs cap a una vida més equilibrada</li>
+                <li>Requereix disciplina i compromís amb tu mateixa</li>
+            </ul>
+
+            <div class="tip-box">
+                <h4>💝 El teu Regal a la Família</h4>
+                <p>Cuidar-te no és egoisme, és un regal que fas a tota la teva família. Una mare/parella que està bé és el millor regal que pots oferir. Tots ho agrairan perquè si tu estàs bé, ells també.</p>
+            </div>
+
+            <h3>Consell final d'implementació</h3>
+            <div class="steps-box">
+                <h4>📅 Implementació Gradual</h4>
+                <p><strong>Comença per un pas cada setmana.</strong> No intentis canviar-ho tot d'una vegada. Tria el concepte que més ressoni amb tu i treballa'l durant una setmana. Després afegeix el següent. La constància és més important que la perfecció.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Botó tornada a dalt -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+
+    <script>
+        // Navegació suau
+        function setActive(element) {
+            // Eliminar classe active de tots els enllaços
+            document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
+            // Afegir classe active a l'enllaç clicat
+            element.classList.add('active');
+        }
+
+        // Scroll suau
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Barra de progrés de lectura
+        function updateProgress() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("progress").style.width = scrolled + "%";
+        }
+
+        // Botó tornada a dalt
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Mostrar/ocultar botó tornada a dalt
+        function toggleBackToTop() {
+            const backToTop = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        }
+
+        // Menú mòbil
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Tancar menú mòbil quan es clica un enllaç
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    document.getElementById('sidebar').classList.remove('open');
+                }
+            });
+        });
+
+        // Destacar secció activa durant scroll
+        function highlightActiveSection() {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Event listeners
+        window.addEventListener('scroll', () => {
+            updateProgress();
+            toggleBackToTop();
+            highlightActiveSection();
+        });
+
+        // Inicialitzar
+        updateProgress();
+        highlightActiveSection();
+    </script>
+</body>
+</html>

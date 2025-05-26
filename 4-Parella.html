@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reconnectar amb la Parella - Guia Completa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2d3436;
+            background: linear-gradient(135deg, #d63031 0%, #e17055 50%, #fdcb6e 100%);
+        }
+
+        /* Barra de progrés */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(to right, #00b894, #00cec9);
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            box-shadow: 2px 0 25px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+            overflow-y: auto;
+            padding: 20px 0;
+            border-right: 3px solid #d63031;
+        }
+
+        .sidebar h2 {
+            padding: 0 20px 20px;
+            color: #e17055;
+            border-bottom: 2px solid #f1f2f6;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #636e72;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: linear-gradient(90deg, rgba(214, 48, 49, 0.1), rgba(225, 112, 85, 0.05));
+            color: #e17055;
+            border-left-color: #d63031;
+            transform: translateX(8px);
+        }
+
+        /* Contingut principal */
+        .main-content {
+            margin-left: 280px;
+            padding: 20px 40px;
+            min-height: 100vh;
+        }
+
+        /* Seccions */
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            padding: 50px 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(214, 48, 49, 0.05));
+            padding: 80px 40px;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section h1 {
+            font-size: 2.8rem;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, #e17055, #d63031, #fdcb6e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            margin: 35px 0 20px 0;
+            color: #e17055;
+            font-weight: 700;
+            border-left: 5px solid #d63031;
+            padding-left: 20px;
+        }
+
+        .section h3 {
+            font-size: 1.4rem;
+            margin: 25px 0 15px 0;
+            color: #a0522d;
+            font-weight: 600;
+        }
+
+        .section p, .section li {
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+            color: #2d3436;
+            line-height: 1.7;
+        }
+
+        .section ul {
+            margin: 15px 0 25px 25px;
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid #00b894;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h3 {
+            color: #00b894;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+            display: block;
+        }
+
+        /* Tipus de cards */
+        .connection-card {
+            border-left-color: #e17055;
+        }
+
+        .connection-card h3 {
+            color: #e17055;
+        }
+
+        .communication-card {
+            border-left-color: #fdcb6e;
+        }
+
+        .communication-card h3 {
+            color: #d68910;
+        }
+
+        .intimacy-card {
+            border-left-color: #d63031;
+        }
+
+        .intimacy-card h3 {
+            color: #d63031;
+        }
+
+        .conflict-card {
+            border-left-color: #a0522d;
+        }
+
+        .conflict-card h3 {
+            color: #a0522d;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(120deg, rgba(253, 203, 110, 0.15), rgba(225, 112, 85, 0.15));
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 5px solid #fdcb6e;
+            border: 1px solid rgba(253, 203, 110, 0.2);
+        }
+
+        .quote {
+            font-style: italic;
+            font-size: 1.2rem;
+            text-align: center;
+            color: #636e72;
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(120deg, rgba(214, 48, 49, 0.1), rgba(225, 112, 85, 0.1));
+            border-radius: 15px;
+            border-left: 4px solid #d63031;
+            font-weight: 500;
+        }
+
+        /* Taules */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, #e17055, #d63031);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background-color: rgba(214, 48, 49, 0.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .section {
+                padding: 30px 20px;
+                margin-bottom: 25px;
+            }
+
+            .hero-section {
+                padding: 50px 20px;
+            }
+
+            .section h1 {
+                font-size: 2.2rem;
+            }
+
+            .section h2 {
+                font-size: 1.6rem;
+            }
+
+            .menu-toggle {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1001;
+                background: #e17055;
+                color: white;
+                border: none;
+                padding: 12px;
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 1.2rem;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll suau */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animacions */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de progrés -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Botó menú mòbil -->
+    <button class="menu-toggle" id="menuToggle" style="display: none;">☰</button>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <h2>💕 Contingut</h2>
+        <a href="#intro" class="nav-item active">❤️ Introducció</a>
+        <a href="#reconnect" class="nav-item">🔗 Reconnectar</a>
+        <a href="#gestures" class="nav-item">✨ Petits Gestos</a>
+        <a href="#time" class="nav-item">⏰ Temps Exclusiu</a>
+        <a href="#intimacy" class="nav-item">💏 Intimitat Sexual</a>
+        <a href="#conflict" class="nav-item">⚡ Gestió de Conflictes</a>
+        <a href="#forgiveness" class="nav-item">🙏 El Poder del Perdó</a>
+        <a href="#agreements" class="nav-item">🤝 Arribar a Acords</a>
+        <a href="#differences" class="nav-item">🌈 Afrontar Diferències</a>
+    </nav>
+
+    <!-- Contingut principal -->
+    <main class="main-content">
+        
+        <!-- SECCIÓ 1: INTRODUCCIÓ -->
+        <section id="intro" class="section hero-section">
+            <h1>💕 Reconnectar amb la Parella</h1>
+            
+            <div class="quote">
+                "La llegada dels fills canvia radicalment la vida de una parella. Del que sembla senzill, com trobar temps per estar junts, es converteix en una tasca gairebé impossible."
+            </div>
+            
+            <div class="highlight">
+                <h3>💡 Realitat Familiar</h3>
+                <p>La rutina diària es centra en la logística, les tasques de casa, portar i dur els nens. Les conversations es limiten al pràctic. És fàcil sentir-se perdut, com si la parella s'hagués dissolt pel camí.</p>
+            </div>
+
+            <h2>🌊 Els Reptes de la Vida Familiar</h2>
+            <div class="cards-grid">
+                <div class="card connection-card">
+                    <div class="card-icon">📋</div>
+                    <h3>Conversacions Logístiques</h3>
+                    <ul>
+                        <li>Horaris i planificació</li>
+                        <li>Tasques de la casa</li>
+                        <li>Gestió dels fills</li>
+                        <li>Aspectes pràctics del dia a dia</li>
+                    </ul>
+                </div>
+                
+                <div class="card connection-card">
+                    <div class="card-icon">💔</div>
+                    <h3>Connexió Perduda</h3>
+                    <ul>
+                        <li>Menys temps per conversar íntimament</li>
+                        <li>Pèrdua de la complicitat</li>
+                        <li>Sensació de ser desconeguts</li>
+                        <li>Vida sexual afectada</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 2: RECONNECTAR -->
+        <section id="reconnect" class="section">
+            <h1>🔗 Conèixer l'Altre de Veritat</h1>
+            
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">Per reconnectar, cal fer un esforç conscient per conèixer l'altre de veritat. Això implica anar més enllà de les conversacions superficials sobre feina, notícies o sèries.</p>
+            
+            <h2>🗣️ Preguntes que Connecten</h2>
+            <div class="cards-grid">
+                <div class="card communication-card">
+                    <div class="card-icon">❓</div>
+                    <h3>Preguntes Obertes Profundes</h3>
+                    <ul>
+                        <li>"Quin és el teu record més bonic de la infància?"</li>
+                        <li>"Què és per a tu el més dur de la vida familiar?"</li>
+                        <li>"Quins són els teus somnis actuals?"</li>
+                        <li>"Quines són les teves pors més grans?"</li>
+                        <li>"Què necessites quan arribes del treball?"</li>
+                    </ul>
+                </div>
+                
+                <div class="card communication-card">
+                    <div class="card-icon">🎯</div>
+                    <h3>Aspectes a Explorar</h3>
+                    <ul>
+                        <li>Medes i ansietats</li>
+                        <li>Desitjos i somnis</li>
+                        <li>Sentiments íntims</li>
+                        <li>Records de la infància</li>
+                        <li>Necessitats específiques</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>⚠️ Error Comú</h3>
+                <p>No assumeixis que saps el que la teva parella vol o necessita. Sempre cal preguntar directament. Algunes vegades, alguna cosa tan simple com necessitar cinc minuts de solitud en arribar del treball pot marcar una gran diferència.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 3: PETITS GESTOS -->
+        <section id="gestures" class="section">
+            <h1>✨ Petits Gestos de Connexió Diària</h1>
+            
+            <div class="quote">
+                "Aquests gestos no han de ser grans o costosos, sinó accions quotidianes que demostren apreci, admiració i carinyo."
+            </div>
+
+            <h2>🙏 Els Tres Pilars dels Gestos d'Amor</h2>
+            <div class="cards-grid">
+                <div class="card connection-card">
+                    <div class="card-icon">🙏</div>
+                    <h3>Agraïment</h3>
+                    <p><strong>Donar les gràcies per les petites coses:</strong></p>
+                    <ul>
+                        <li>Pagar una factura</li>
+                        <li>Posar una rentadora</li>
+                        <li>Preparar el sopar</li>
+                        <li>Acordar-se de comprar alguna cosa</li>
+                    </ul>
+                    <p><strong>Objectiu:</strong> Reconèixer l'esforç i el treball que l'altre realitza.</p>
+                </div>
+                
+                <div class="card connection-card">
+                    <div class="card-icon">👏</div>
+                    <h3>Admiració</h3>
+                    <p><strong>Expressar admiració per habilitats i qualitats:</strong></p>
+                    <ul>
+                        <li>"Què rica ha quedat el menjar"</li>
+                        <li>"Què bé has ajudat al nostre fill"</li>
+                        <li>"M'encanta com cantes"</li>
+                        <li>"M'agrada que em fes riure"</li>
+                    </ul>
+                    <p><strong>Objectiu:</strong> Fer que l'altre se senti valorat.</p>
+                </div>
+                
+                <div class="card connection-card">
+                    <div class="card-icon">🤗</div>
+                    <h3>Carinyo Físic</h3>
+                    <p><strong>Contacte físic no sexual:</strong></p>
+                    <ul>
+                        <li>Petons espontanis (galta, castos o sexuals)</li>
+                        <li>Abracades</li>
+                        <li>Donar-se la mà</li>
+                        <li>Carícias casual</li>
+                    </ul>
+                    <p><strong>Objectiu:</strong> Construir la relació dia a dia, fer-vos sentir com un equip.</p>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>⭐ Regla d'Or</h3>
+                <p>Tots aquests gestos han de ser <strong>genuïns i sense "peros"</strong>. Res de "la comida está rica, pero le falta sal". Això anul·la completament l'halago.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 4: TEMPS EXCLUSIU -->
+        <section id="time" class="section">
+            <h1>⏰ Temps Exclusiu per a la Parella</h1>
+            
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">La falta de temps és una queixa comuna, però és vital reservar espais al calendari per a la parella. La organització diària no hauria de consumir tot el temps junts.</p>
+
+            <h2>📅 Estratègies de Temps</h2>
+            <div class="cards-grid">
+                <div class="card communication-card">
+                    <div class="card-icon">☕</div>
+                    <h3>Temps Diari</h3>
+                    <ul>
+                        <li>15-30 minuts cada dia per xerrar</li>
+                        <li>Sense distraccions (televisió, mòbils)</li>
+                        <li>Enfocat en la connexió, no en logística</li>
+                        <li>Preferiblement abans de dormir</li>
+                    </ul>
+                </div>
+                
+                <div class="card communication-card">
+                    <div class="card-icon">💑</div>
+                    <h3>Cites Setmanals</h3>
+                    <ul>
+                        <li>Trobades planificades setmanalment</li>
+                        <li>Pot ser a casa quan els nens dormen</li>
+                        <li>PROHIBIT parlar de fills o tasques</li>
+                        <li>Recuperar l'home i la dona que eren abans</li>
+                    </ul>
+                </div>
+                
+                <div class="card communication-card">
+                    <div class="card-icon">✈️</div>
+                    <h3>Escapades Excepcionals</h3>
+                    <ul>
+                        <li>Sortides de cap de setmana</li>
+                        <li>Nits especials fora de casa</li>
+                        <li>Viatges curts sense fills</li>
+                        <li>Experiències noves junts</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>📝 Organització Intel·ligent</h2>
+            <div class="highlight">
+                <h3>🗂️ Coordinar-se per Escrit</h3>
+                <p>Una forma d'evitar que la logística consumeixi tot el temps és coordinar-se per escrit:</p>
+                <ul style="margin: 15px 0; padding-left: 25px;">
+                    <li>Calendari online compartit</li>
+                    <li>Agenda de paper visible</li>
+                    <li>Blog privat per a la família</li>
+                    <li>Aplicacions de gestió familiar</li>
+                </ul>
+                <p><strong>Objectiu:</strong> Alliberar el temps presencial de conversations pràctiques per centrar-se en la connexió.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 5: INTIMITAT SEXUAL -->
+        <section id="intimacy" class="section">
+            <h1>💏 La Intimitat Sexual Després dels Fills</h1>
+            
+            <div class="quote">
+                "És molt comú que el desig sexual de la mare disminueixi considerablement, especialment mentre el bebè és lactant, i que hi hagi un desfasament amb el desig del pare."
+            </div>
+
+            <h2>💔 Realitats i Canvis</h2>
+            <div class="cards-grid">
+                <div class="card intimacy-card">
+                    <div class="card-icon">🔄</div>
+                    <h3>Canvis Normals</h3>
+                    <ul>
+                        <li>Disminució del desig sexual femení</li>
+                        <li>Desfasament entre parelles</li>
+                        <li>Canvis hormonals</li>
+                        <li>Cansament físic i mental</li>
+                        <li>Noves prioritats</li>
+                    </ul>
+                    <p><strong>Important:</strong> Acceptar que les coses han canviat i que ningú té la culpa.</p>
+                </div>
+                
+                <div class="card intimacy-card">
+                    <div class="card-icon">❌</div>
+                    <h3>Què NO Fer</h3>
+                    <ul>
+                        <li>Culpabilitzar l'altre pels canvis</li>
+                        <li>Pressionar per tenir sexe</li>
+                        <li>Assumir que ja no hi ha solució</li>
+                        <li>Deixar morir completament la intimitat</li>
+                        <li>No parlar del tema</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🔥 Mantenir la "Flama" Encesa</h2>
+            <div class="cards-grid">
+                <div class="card intimacy-card">
+                    <div class="card-icon">💝</div>
+                    <h3>Connexió No Sexual</h3>
+                    <p>Tots els gestos de connexió diària són els preludis del sexe:</p>
+                    <ul>
+                        <li>Escoltar activament</li>
+                        <li>Fer coses per l'altre</li>
+                        <li>Agraïments i piropos</li>
+                        <li>Comentaris còmplices</li>
+                        <li>Carícias espontànies</li>
+                        <li>Contacte físic no sexual</li>
+                    </ul>
+                </div>
+                
+                <div class="card intimacy-card">
+                    <div class="card-icon">🗓️</div>
+                    <h3>Planificació i Comunicació</h3>
+                    <ul>
+                        <li>Reservar temps per a trobades sexuals</li>
+                        <li>No deixar-se vèncer per la mandra</li>
+                        <li>Convidar obertament: "Fem l'amor aquesta nit?"</li>
+                        <li>Comunicar què t'agrada ara</li>
+                        <li>Explorar alternatives: sexe oral, masturbació mútua</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>🔑 Clau Principal</h3>
+                <p>El més important és el contacte físic no sexual: que els cossos es segueixin reconeixent, agradant i dialogant. Encara que la freqüència o el tipus de trobades canviï, mantenir la connexió alimenta la possibilitat que el desig sexual augmenti gradualment.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 6: GESTIÓ DE CONFLICTES -->
+        <section id="conflict" class="section">
+            <h1>⚡ El Conflicte com a Oportunitat</h1>
+            
+            <div class="quote">
+                "El conflicte en la parella és inevitable, especialment amb els canvis i l'estrès que porta la vida familiar. Però el conflicte és positiu i necessari."
+            </div>
+
+            <h2>✅ Per què el Conflicte és Positiu</h2>
+            <div class="cards-grid">
+                <div class="card conflict-card">
+                    <div class="card-icon">🔍</div>
+                    <h3>Beneficis del Conflicte</h3>
+                    <ul>
+                        <li>Identifica què no funciona</li>
+                        <li>Treu a la llum emocions amagades</li>
+                        <li>Pot acostar-vos si es maneja bé</li>
+                        <li>Millora la comprensió mútua</li>
+                        <li>Enforteix la relació</li>
+                    </ul>
+                </div>
+                
+                <div class="card conflict-card">
+                    <div class="card-icon">⛔</div>
+                    <h3>Respostes Destructives</h3>
+                    <ul>
+                        <li>Explotar i atacar</li>
+                        <li>Defensar-se agressivament</li>
+                        <li>Evitar el conflicte</li>
+                        <li>Bloquejar-se emocionalment</li>
+                        <li>Fugir del problema</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🎯 Quan Tu Inicies el Conflicte</h2>
+            <div class="cards-grid">
+                <div class="card conflict-card">
+                    <div class="card-icon">🎯</div>
+                    <h3>Actitud Correcta</h3>
+                    <ul>
+                        <li>Buscar solucions, no ferir o culpar</li>
+                        <li>Parlar de com et sents TU</li>
+                        <li>Expressar què necessites</li>
+                        <li>No acusar ni etiquetar l'altre</li>
+                        <li>Enfocar-te en la situació present</li>
+                    </ul>
+                </div>
+                
+                <div class="card conflict-card">
+                    <div class="card-icon">💬</div>
+                    <h3>Exemples de Comunicació</h3>
+                    <p><strong>❌ Incorrecte:</strong></p>
+                    <p>"Ets un mandrós, mai reculls res"</p>
+                    <br>
+                    <p><strong>✅ Correcte:</strong></p>
+                    <p>"Em sento trista i cansada, em sento com una criada perquè netejo tot el dels altres i necessito que et involucris en les tasques de casa"</p>
+                </div>
+            </div>
+
+            <h2>👂 Quan l'Altre Inicia el Conflicte</h2>
+            <div class="cards-grid">
+                <div class="card conflict-card">
+                    <div class="card-icon">🛡️</div>
+                    <h3>Respostes Constructives</h3>
+                    <ul>
+                        <li>No posar-te a la defensiva</li>
+                        <li>No aïllar-te emocionalment</li>
+                        <li>Recordar que el seu problema és també teu</li>
+                        <li>Escoltar activament per comprendre</li>
+                        <li>Demanar respecte si el llenguatge és feridora</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🤝 Durant el Conflicte</h2>
+            <div class="highlight">
+                <h3>🎯 Objectius i Estratègies</h3>
+                <ul style="margin: 15px 0; padding-left: 25px;">
+                    <li><strong>Objectiu principal:</strong> Buscar solucions, no agredir o guanyar</li>
+                    <li><strong>Llenguatge:</strong> Evita "sempre" i "mai" (generalizaciones injustes)</li>
+                    <li><strong>Temps mort:</strong> Pots parar la conversa si perds el control</li>
+                    <li><strong>Perspectiva:</strong> Recordar que la teva parella no és el teu enemic</li>
+                    <li><strong>Escolta activa:</strong> Intentar comprendre el punt de vista de l'altre</li>
+                </ul>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Situació</th>
+                        <th>Resposta Destructiva</th>
+                        <th>Resposta Constructiva</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Arribada tardana del treball</td>
+                        <td>"Sempre arribes tard del treball"</td>
+                        <td>"Últimament treballes fins molt tard i et trobo a faltar, necessito passar temps amb tu"</td>
+                    </tr>
+                    <tr>
+                        <td>Desordre a casa</td>
+                        <td>"Ets un desastre, mai reculls res"</td>
+                        <td>"Em sento aclaparada amb el desordre, necessito ajuda per mantenir la casa organitzada"</td>
+                    </tr>
+                    <tr>
+                        <td>Falta d'atenció</td>
+                        <td>"Tu mai m'escoltes"</td>
+                        <td>"Em sento desconnectada quan estem al mòbil mentre parlem, necessito la teva atenció"</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- SECCIÓ 7: EL PODER DEL PERDÓ -->
+        <section id="forgiveness" class="section">
+            <h1>🙏 L'Extraordinari Poder de Demanar Perdó</h1>
+            
+            <div class="quote">
+                "Demanar perdó és una eina increïblement poderosa en les relacions íntimes. Quan demanes perdó sincerament, reconeix la teva vulnerabilitat i imperfecció."
+            </div>
+
+            <h2>💝 Què Significa un Perdó Sincere</h2>
+            <div class="cards-grid">
+                <div class="card connection-card">
+                    <div class="card-icon">❤️</div>
+                    <h3>Elements del Perdó Autentic</h3>
+                    <ul>
+                        <li>Reconèixer la teva vulnerabilitat</li>
+                        <li>Admetre que et equivoques</li>
+                        <li>Mostrar que estàs disposat a millorar</li>
+                        <li>Demostrar que el respecte cap a l'altre importa més que l'orgull</li>
+                        <li>Facilitar la connexió des de la humilitat</li>
+                    </ul>
+                </div>
+                
+                <div class="card connection-card">
+                    <div class="card-icon">🚫</div>
+                    <h3>Perdó SIN "Peros"</h3>
+                    <p><strong>❌ Incorrecte:</strong></p>
+                    <p>"Perdona'm per haver cridat, PERÒ et portaves molt malament"</p>
+                    <br>
+                    <p><strong>✅ Correcte:</strong></p>
+                    <p>"Perdona'm per haver cridat. Sento haver-te fet mal amb les meves paraules"</p>
+                    <br>
+                    <p>El "però" retorna la culpa a l'altre i no és un perdó real.</p>
+                </div>
+            </div>
+
+            <h2>🔧 Com Funciona el Perdó</h2>
+            <div class="cards-grid">
+                <div class="card connection-card">
+                    <div class="card-icon">🩹</div>
+                    <h3>Beneficis del Perdó</h3>
+                    <ul>
+                        <li>Tanca les ferides que has causat</li>
+                        <li>Facilita la connexió per resoldre el conflicte</li>
+                        <li>Crea un espai de respecte mutu</li>
+                        <li>Ensenya humilitat als fills</li>
+                        <li>Permet seguir defensant les teves idees</li>
+                    </ul>
+                </div>
+                
+                <div class="card connection-card">
+                    <div class="card-icon">⚖️</div>
+                    <h3>Què NO és el Perdó</h3>
+                    <ul>
+                        <li>Part d'un judici per "guanyar"</li>
+                        <li>Oblidar el conflicte</li>
+                        <li>Renunciar a les teves idees</li>
+                        <li>Acceptar maltractament</li>
+                        <li>Una estratègia de manipulació</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>🌟 El Poder Transformador</h3>
+                <p>Demanar perdó per COM t'has expressat, no per el que penses o sents, és fonamental. Pots seguir defensant el que és important per tu, però et pendeixes d'haver tractat malament l'altre persona. És un exemple molt important, especialment si tens fills.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 8: ARRIBAR A ACORDS -->
+        <section id="agreements" class="section">
+            <h1>🤝 Arribar a Acords: Més Enllà de les Posicions</h1>
+            
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">En la vida en parella, especialment en la criança, sorgiran desacords en molts aspectes. Sovint les parelles s'encallen perquè cada un defensa la seva "posició" concreta.</p>
+
+            <h2>🎯 Àrees Comunes de Desacord</h2>
+            <div class="cards-grid">
+                <div class="card communication-card">
+                    <div class="card-icon">👨‍👩‍👧‍👦</div>
+                    <h3>Criança i Família</h3>
+                    <ul>
+                        <li>Rigidesa vs. permissivitat</li>
+                        <li>To de veu amb els fills</li>
+                        <li>Temps en família vs. temps individual</li>
+                        <li>Activitats per als nens</li>
+                        <li>Normes i límits</li>
+                    </ul>
+                </div>
+                
+                <div class="card communication-card">
+                    <div class="card-icon">🏠</div>
+                    <h3>Vida Quotidiana</h3>
+                    <ul>
+                        <li>Repartiment de tasques domèstiques</li>
+                        <li>Ús del temps lliure</li>
+                        <li>Presa de decisions</li>
+                        <li>Gestió econòmica</li>
+                        <li>Relacions socials</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🔍 Explorar Més Enllà de les Posicions</h2>
+            <div class="highlight">
+                <h3>🎯 Exemple Pràctic</h3>
+                <p><strong>Conflicte superficial:</strong> "Anem els dos a recollir els nens" vs. "Que hi vagi un sol"</p>
+                <p><strong>Exploració profunda:</strong> "Què somio per al diumenge?"</p>
+                <ul style="margin: 15px 0; padding-left: 25px;">
+                    <li><strong>Un pot desitjar:</strong> No acostar-se tard fent tasques domèstiques</li>
+                    <li><strong>L'altre pot desitjar:</strong> Passar temps familiar</li>
+                </ul>
+                <p><strong>Solucions creatives:</strong> Fer algunes tasques durant la setmana, buscar altres moments de connexió familiar</p>
+            </div>
+
+            <h2>🌱 El Creixement dels Acords</h2>
+            <div class="cards-grid">
+                <div class="card communication-card">
+                    <div class="card-icon">💪</div>
+                    <h3>Cedír és Créixer</h3>
+                    <p>Arribar a un acord no és claudicar ni renunciar als teus valors més íntims. Quan cedeixes i t'acostes a l'altre per trobar un punt de trobada, estàs creixent i deixant espai a una persona fonamental en la teva vida.</p>
+                </div>
+                
+                <div class="card communication-card">
+                    <div class="card-icon">🤔</div>
+                    <h3>No Hi Ha Veritat Absoluta</h3>
+                    <p>No pensis que tens la veritat absoluta. La majoria de les vegades, en els conflictes quotidians, no hi ha una única solució correcta. Busca alguna cosa que us uneixi, que us vinculi i que us acosti.</p>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Posició A</th>
+                        <th>Posició B</th>
+                        <th>Necessitat Profunda</th>
+                        <th>Solució Creativa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sortir cada cap de setmana</td>
+                        <td>Quedar-se sempre a casa</td>
+                        <td>Socialitzar vs. Descansar</td>
+                        <td>Alternar caps de setmana segons necessitats</td>
+                    </tr>
+                    <tr>
+                        <td>Gastar en vacances</td>
+                        <td>Estalviar tot</td>
+                        <td>Gaudir vs. Seguretat</td>
+                        <td>Pressupost fix per a oci i estalvi</td>
+                    </tr>
+                    <tr>
+                        <td>Normes estrictes</td>
+                        <td>Més flexibilitat</td>
+                        <td>Seguretat vs. Llibertat</td>
+                        <td>Normes bàsiques + àrees de flexibilitat</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- SECCIÓ 9: AFRONTAR DIFERÈNCIES -->
+        <section id="differences" class="section">
+            <h1>🌈 Diferències que Mai Desapareixeran</h1>
+            
+            <div class="quote">
+                "És una realitat difícil d'acceptar, però hi ha diferències de personalitat, actitud o valors que mai desapareixeran completament en una parella."
+            </div>
+
+            <h2>⚖️ Diferències Permanents Comuns</h2>
+            <div class="cards-grid">
+                <div class="card conflict-card">
+                    <div class="card-icon">💰</div>
+                    <h3>Gestió Dels Diners</h3>
+                    <ul>
+                        <li>Un gastador vs. un estalviador</li>
+                        <li>Prioritats diferents en despeses</li>
+                        <li>Actitud cap al risc financer</li>
+                        <li>Planificació a llarg vs. curt termini</li>
+                    </ul>
+                </div>
+                
+                <div class="card conflict-card">
+                    <div class="card-icon">🏠</div>
+                    <h3>Estil de Vida</h3>
+                    <ul>
+                        <li>Un ordenat vs. un desordenat</li>
+                        <li>Social vs. introvertit</li>
+                        <li>Planificador vs. espontani</li>
+                        <li>Matiner vs. nocturn</li>
+                    </ul>
+                </div>
+                
+                <div class="card conflict-card">
+                    <div class="card-icon">👶</div>
+                    <h3>Enfocaments de Criança</h3>
+                    <ul>
+                        <li>Estricte vs. permissiu</li>
+                        <li>Protector vs. aventurer</li>
+                        <li>Acadèmic vs. creatiu</li>
+                        <li>Tradicions vs. innovació</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🔄 El Procés d'Acceptació</h2>
+            <div class="cards-grid">
+                <div class="card conflict-card">
+                    <div class="card-icon">✅</div>
+                    <h3>Primer Pas: Acceptar</h3>
+                    <p>El primer pas és acceptar-ho. <strong>No canviarà.</strong> Però acceptar-ho no és suficient; cal parlar-ho constantment.</p>
+                    <p>Aquestes converses poden ser recurrents, però són necessàries per sanar, acostar-se i trobar compromisos.</p>
+                </div>
+                
+                <div class="card conflict-card">
+                    <div class="card-icon">🔍</div>
+                    <h3>Segon Pas: Comprendre</h3>
+                    <p>Intentar comprendre d'on vénen aquestes actituds pot facilitar l'empatia:</p>
+                    <ul>
+                        <li>Una infància amb restriccions → desig de gaudir ara</li>
+                        <li>Experiències de pèrdua → necessitat de seguretat</li>
+                        <li>Models familiars → patrons apresos</li>
+                    </ul>
+                </div>
+                
+                <div class="card conflict-card">
+                    <div class="card-icon">⚖️</div>
+                    <h3>Tercer Pas: Compromís</h3>
+                    <p>Haureu de trobar un punt intermig que permeti satisfer, en part, les necessitats de tots dos:</p>
+                    <ul>
+                        <li>Gastar una part, estalviar una altra</li>
+                        <li>Zones ordenades + zones més relaxades</li>
+                        <li>Combinar estructura amb flexibilitat</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>💪 Fortalesa a Través del Conflicte</h2>
+            <div class="highlight">
+                <h3>🌟 Visió Transformadora</h3>
+                <p>Encara que les converses sobre aquestes diferències siguin difícils i es repedeixin, abordar-les des de la comprensió i l'acceptació, sense jutjar, enforteix la relació.</p>
+                <p>Els conflictes, gestionats amb respecte i la mentalitat que la vostra parella no és el vostre enemic sinó algú a qui estimeu i amb qui voleu solucionar els problemes junts, us faran més forts.</p>
+                <ul style="margin: 15px 0; padding-left: 25px;">
+                    <li>Construeixen comprensió mútua</li>
+                    <li>Desenvolupen habilitats de negociació</li>
+                    <li>Creen vincles més profunds</li>
+                    <li>Ensenyen als fills a gestionar diferències</li>
+                    <li>Permeten créixer com a parella</li>
+                </ul>
+            </div>
+
+            <div class="quote" style="background: linear-gradient(120deg, rgba(0, 184, 148, 0.1), rgba(0, 206, 201, 0.1)); border-left-color: #00b894;">
+                "La vida en parella implica un esforç continu per resoldre els conflictes que sorgeixen, fins i tot els mateixos una i altra vegada, però és un esforç que val la pena per construir una relació forta i satisfactòria."
+            </div>
+
+            <div class="highlight" style="background: linear-gradient(120deg, rgba(214, 48, 49, 0.15), rgba(225, 112, 85, 0.15)); border-left-color: #d63031;">
+                <h3>❤️ Reflexió Final</h3>
+                <p style="font-size: 1.2rem; text-align: center; font-weight: 600; color: #d63031;">
+                    Reconnectar amb la parella és un treball diari d'amor, comprensió i creixement mutu. Cada esforç que feu per entendre-us i acostar-vos és una inversió en la vostra felicitat compartida. 💕
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const sections = document.querySelectorAll('.section');
+            const progressBar = document.getElementById('progressBar');
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menuToggle');
+
+            // Navegació smooth scroll
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    
+                    // Actualitzar classe activa
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Scroll suau amb offset per evitar solapament
+                    const offsetTop = targetSection.offsetTop - 20;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Tancar menú mòbil
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            });
+
+            // Barra de progrés i navegació activa
+            window.addEventListener('scroll', function() {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                progressBar.style.width = scrolled + '%';
+
+                // Detectar secció actual
+                let currentSection = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 100;
+                    const sectionBottom = sectionTop + section.clientHeight;
+                    if (window.pageYOffset >= sectionTop && window.pageYOffset < sectionBottom) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
+
+                // Actualitzar navegació activa
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('href') === '#' + currentSection) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+
+            // Gestió menú mòbil
+            function checkScreenSize() {
+                if (window.innerWidth <= 768) {
+                    menuToggle.style.display = 'block';
+                } else {
+                    menuToggle.style.display = 'none';
+                    sidebar.classList.remove('active');
+                }
+            }
+
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                });
+            }
+
+            // Tancar menú en clic fora
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768 && !sidebar.contains(e.target) && e.target !== menuToggle) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            checkScreenSize();
+            window.addEventListener('resize', checkScreenSize);
+        });
+    </script>
+</body>
+</html>

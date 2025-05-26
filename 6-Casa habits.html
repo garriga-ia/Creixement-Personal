@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplificar la Vida Familiar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2d3436;
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 50%, #8e44ad 100%);
+        }
+
+        /* Barra de progrés */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(to right, #e84393, #fd79a8);
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            box-shadow: 2px 0 25px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+            overflow-y: auto;
+            padding: 20px 0;
+            border-right: 3px solid #a29bfe;
+        }
+
+        .sidebar h2 {
+            padding: 0 20px 20px;
+            color: #6c5ce7;
+            border-bottom: 2px solid #f1f2f6;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #636e72;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: linear-gradient(90deg, rgba(162, 155, 254, 0.1), rgba(108, 92, 231, 0.05));
+            color: #6c5ce7;
+            border-left-color: #a29bfe;
+            transform: translateX(8px);
+        }
+
+        /* Contingut principal */
+        .main-content {
+            margin-left: 280px;
+            padding: 20px 40px;
+            min-height: 100vh;
+        }
+
+        /* Seccions */
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            padding: 50px 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(162, 155, 254, 0.05));
+            padding: 80px 40px;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section h1 {
+            font-size: 2.8rem;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe, #8e44ad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            margin: 35px 0 20px 0;
+            color: #6c5ce7;
+            font-weight: 700;
+            border-left: 5px solid #a29bfe;
+            padding-left: 20px;
+        }
+
+        .section h3 {
+            font-size: 1.4rem;
+            margin: 25px 0 15px 0;
+            color: #8e44ad;
+            font-weight: 600;
+        }
+
+        .section p, .section li {
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+            color: #2d3436;
+            line-height: 1.7;
+        }
+
+        .section ul {
+            margin: 15px 0 25px 25px;
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid #e84393;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h3 {
+            color: #e84393;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+            display: block;
+        }
+
+        /* Tipus de cards */
+        .play-card {
+            border-left-color: #a29bfe;
+        }
+
+        .play-card h3 {
+            color: #a29bfe;
+        }
+
+        .nature-card {
+            border-left-color: #00b894;
+        }
+
+        .nature-card h3 {
+            color: #00b894;
+        }
+
+        .creative-card {
+            border-left-color: #fd79a8;
+        }
+
+        .creative-card h3 {
+            color: #fd79a8;
+        }
+
+        .simplify-card {
+            border-left-color: #6c5ce7;
+        }
+
+        .simplify-card h3 {
+            color: #6c5ce7;
+        }
+
+        .rhythm-card {
+            border-left-color: #8e44ad;
+        }
+
+        .rhythm-card h3 {
+            color: #8e44ad;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(120deg, rgba(162, 155, 254, 0.15), rgba(142, 68, 173, 0.15));
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 5px solid #a29bfe;
+            border: 1px solid rgba(162, 155, 254, 0.2);
+        }
+
+        .quote {
+            font-style: italic;
+            font-size: 1.2rem;
+            text-align: center;
+            color: #636e72;
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(120deg, rgba(108, 92, 231, 0.1), rgba(162, 155, 254, 0.1));
+            border-radius: 15px;
+            border-left: 4px solid #6c5ce7;
+            font-weight: 500;
+        }
+
+        /* Taules */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .toys-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .keep-toys, .remove-toys {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .keep-toys {
+            border-left: 5px solid #00b894;
+        }
+
+        .keep-toys h3 {
+            color: #00b894;
+        }
+
+        .remove-toys {
+            border-left: 5px solid #e84393;
+        }
+
+        .remove-toys h3 {
+            color: #e84393;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background-color: rgba(162, 155, 254, 0.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .section {
+                padding: 30px 20px;
+                margin-bottom: 25px;
+            }
+
+            .hero-section {
+                padding: 50px 20px;
+            }
+
+            .section h1 {
+                font-size: 2.2rem;
+            }
+
+            .section h2 {
+                font-size: 1.6rem;
+            }
+
+            .menu-toggle {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1001;
+                background: #6c5ce7;
+                color: white;
+                border: none;
+                padding: 12px;
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 1.2rem;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toys-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        /* Scroll suau */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animacions */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de progrés -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Botó menú mòbil -->
+    <button class="menu-toggle" id="menuToggle" style="display: none;">☰</button>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <h2>🌸 Contingut</h2>
+        <a href="#intro" class="nav-item active">🏠 Introducció</a>
+        <a href="#free-play" class="nav-item">🎪 Joc Lliure</a>
+        <a href="#nature" class="nav-item">🌿 Natura i Aire Lliure</a>
+        <a href="#creativity" class="nav-item">🎨 Creativitat i Manualitats</a>
+        <a href="#reading" class="nav-item">📚 Lectura i Contes</a>
+        <a href="#movement" class="nav-item">🏃‍♀️ Moviment Lliure</a>
+        <a href="#screens" class="nav-item">📱 Pantalles</a>
+        <a href="#whims" class="nav-item">🎭 Gestió de Capricis</a>
+        <a href="#simplify-objects" class="nav-item">🧸 Simplificar Objectes</a>
+        <a href="#toys" class="nav-item">🎯 Selecció de Joguines</a>
+        <a href="#activities" class="nav-item">⚽ Simplificar Activitats</a>
+        <a href="#rhythms" class="nav-item">⏰ Ritmes i Rutines</a>
+        <a href="#protection" class="nav-item">🛡️ Protegir l'Espai Infantil</a>
+    </nav>
+
+    <!-- Contingut principal -->
+    <main class="main-content">
+        
+        <!-- SECCIÓ 1: INTRODUCCIÓ -->
+        <section id="intro" class="section hero-section">
+            <h1>🌸 Simplificar la Vida Familiar</h1>
+            
+            <div class="quote">
+                "És fundamental reflexionar sobre com utilitzeu el vostre temps en família i quines activitats prioritzeu. Elegir activitats que beneficiïn els nens internament és clau per al seu benestar i el vostre."
+            </div>
+            
+            <div class="highlight">
+                <h3>💡 Objectiu Principal</h3>
+                <p>Invertir temps en coses sanes i saludables us ajudarà a estar molt millor. Les activitats han de permetre als nens connectar amb ells mateixos, estar feliços, explorar, créixer i desenvolupar-se.</p>
+            </div>
+
+            <h2>🌊 Beneficis de la Simplificació</h2>
+            <div class="cards-grid">
+                <div class="card simplify-card">
+                    <div class="card-icon">🧘</div>
+                    <h3>Més Pau i Equilibri</h3>
+                    <ul>
+                        <li>Menys sobreestimulació</li>
+                        <li>Més temps per respirar</li>
+                        <li>Ambient més tranquil</li>
+                        <li>Reducció de l'estrès familiar</li>
+                    </ul>
+                </div>
+                
+                <div class="card simplify-card">
+                    <div class="card-icon">🌱</div>
+                    <h3>Millor Desenvolupament</h3>
+                    <ul>
+                        <li>Més creativitat</li>
+                        <li>Millor concentració</li>
+                        <li>Desenvolupa autonomia</li>
+                        <li>Connexió amb un mateix</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 2: JOC LLIURE -->
+        <section id="free-play" class="section">
+            <h1>🎪 El Poder del Joc Lliure</h1>
+            
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">És vital deixar que els nens juguin al seu aire, sense la constant direcció dels adults. En la vida dels nens, la majoria d'activitats solen estar dirigides per adults.</p>
+            
+            <h2>🎯 Què és el Joc Lliure</h2>
+            <div class="cards-grid">
+                <div class="card play-card">
+                    <div class="card-icon">🎨</div>
+                    <h3>Activitats del Joc Lliure</h3>
+                    <ul>
+                        <li>Embrutar-se i mullar-se</li>
+                        <li>Fer coses que no surten perfectes</li>
+                        <li>Passar hores llegint tranquil·lament</li>
+                        <li>Organitzar jocs complexos amb rols i regles</li>
+                        <li>Explorar i descobrir lliurement</li>
+                    </ul>
+                </div>
+                
+                <div class="card play-card">
+                    <div class="card-icon">🧠</div>
+                    <h3>Beneficis del Joc Lliure</h3>
+                    <ul>
+                        <li>Els nens se senten lliures i capaços</li>
+                        <li>Desenvolupament sense intervenció constant</li>
+                        <li>Ment, emocions i cervell es desenvolupen</li>
+                        <li>Se senten dueños del seu món</li>
+                        <li>Aprenen multitud de coses</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>🎭 Per als Nens Més Grans</h3>
+                <p>El joc lliure pot evolucionar cap a l'organització de jocs complexos amb rols i regles. És fonamental que existeixin espais on la seva ment, emocions i cervell es desenvolupin sense la nostra intervenció constant indicant la direcció.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 3: NATURA I AIRE LLIURE -->
+        <section id="nature" class="section">
+            <h1>🌿 Connexió amb la Natura</h1>
+            
+            <div class="quote">
+                "El contacte amb la natura i l'aire lliure és fonamental. Té un efecte sanador no només en els nens, sinó també en els adults, ja que ens connecta amb nosaltres mateixos."
+            </div>
+
+            <h2>🏞️ Beneficis de la Natura</h2>
+            <div class="cards-grid">
+                <div class="card nature-card">
+                    <div class="card-icon">🌳</div>
+                    <h3>Efectes Sanadors</h3>
+                    <ul>
+                        <li>Connexió amb un mateix</li>
+                        <li>Possibilitats infinites d'activitats</li>
+                        <li>Fomenta el descobriment i l'asombro</li>
+                        <li>Desenvolupa l'amor pel món</li>
+                        <li>Sensació profunda de pertinença</li>
+                    </ul>
+                </div>
+                
+                <div class="card nature-card">
+                    <div class="card-icon">🏖️</div>
+                    <h3>Activitats en la Natura</h3>
+                    <ul>
+                        <li>Fer castells de sorra</li>
+                        <li>Jugar amb terra i fang</li>
+                        <li>Explorar i descobrir animals i plantes</li>
+                        <li>Recollir objectes naturals</li>
+                        <li>Observar i meravellar-se</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>💫 El Placer de l'Asombro</h2>
+            <div class="highlight">
+                <h3>🌟 Capacitat de Meravellar-se</h3>
+                <p>La natura fomenta el descobriment i l'asombro, aquesta capacitat de meravellar-se davant les coses hermoses que ens envolten. Aquest plaer és diferent al de les activitats dirigides o les pantalles, i els dona una sensació profunda de "aquest és el meu lloc al món".</p>
+                <p>A més, en la natura és probable que tardin molt a avorrir-se si se'ls permet explorar lliurement.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 4: CREATIVITAT I MANUALITATS -->
+        <section id="creativity" class="section">
+            <h1>🎨 Creativitat i Manualitats en Família</h1>
+            
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">Les manualitats en família són una activitat que pot unir molt. No cal preocupar-se per si s'embruten; n'hi ha prou amb preparar l'entorn per facilitar la neteja posterior.</p>
+
+            <h2>🎭 El Rol de l'Adult</h2>
+            <div class="cards-grid">
+                <div class="card creative-card">
+                    <div class="card-icon">🤲</div>
+                    <h3>Com Participar</h3>
+                    <ul>
+                        <li>No cal ser expert ni participar activament</li>
+                        <li>Ser un facilitador: ajudar amb materials</li>
+                        <li>Resoldre petits problemes</li>
+                        <li>Deixar que ells creïn lliurement</li>
+                        <li>No jutjar el resultat, sinó l'esforç</li>
+                    </ul>
+                </div>
+                
+                <div class="card creative-card">
+                    <div class="card-icon">🧠</div>
+                    <h3>Beneficis de les Manualitats</h3>
+                    <ul>
+                        <li>Favoreixen la creativitat</li>
+                        <li>Desenvolupen habilitat manual</li>
+                        <li>Estan lligades al desenvolupament neuronal</li>
+                        <li>Els nens disfruten fent coses amb les mans</li>
+                        <li>Se senten satisfets amb els seus treballs</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🎨 Fomentant l'Autoestima</h2>
+            <div class="highlight">
+                <h3>💬 Diàleg Positiu</h3>
+                <p>És crucial no jutjar el resultat, sinó l'esforç. Iniciar un diàleg sobre el que han fet ("Veig que aquí vas usar molts violetes") anima el seu esforç i ajuda a fer créixer la seva autoestima.</p>
+                <p>La creativitat és una habilitat útil per resoldre qualsevol tipus de problema en la vida, no només artístics.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 5: LECTURA I CONTES -->
+        <section id="reading" class="section">
+            <h1>📚 El Món de la Lectura i els Contes</h1>
+            
+            <div class="quote">
+                "Contar històries i llegir contes amb els nens és una activitat diària que hauria de ser una prioritat. Les històries ens ajuden a 'sobreviure en el món' permetent-nos visitar altres mons."
+            </div>
+
+            <h2>🌟 Beneficis de la Lectura Compartida</h2>
+            <div class="cards-grid">
+                <div class="card creative-card">
+                    <div class="card-icon">🧠</div>
+                    <h3>Desenvolupament Mental</h3>
+                    <ul>
+                        <li>Els acostuma a la lectura</li>
+                        <li>Facilita l'aprenentatge escolar</li>
+                        <li>Obre la ment a un món enorme de possibilitats</li>
+                        <li>Enriqueixen el llenguatge</li>
+                        <li>Els fa més intel·ligents</li>
+                    </ul>
+                </div>
+                
+                <div class="card creative-card">
+                    <div class="card-icon">💖</div>
+                    <h3>Desenvolupament Emocional</h3>
+                    <ul>
+                        <li>Els connecta amb les seves emocions</li>
+                        <li>Els ajuda a comprendre pors i atraccions</li>
+                        <li>Pot tranquil·litzar davant ràbies i frustracions</li>
+                        <li>Crea connexió, fins i tot si ja llegeixen sols</li>
+                        <li>Proporciona eines per gestionar el món</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 6: MOVIMENT LLIURE -->
+        <section id="movement" class="section">
+            <h1>🏃‍♀️ Fomentant el Moviment Lliure</h1>
+            
+            <div class="cards-grid">
+                <div class="card play-card">
+                    <div class="card-icon">🤸‍♂️</div>
+                    <h3>Activitats de Moviment</h3>
+                    <ul>
+                        <li>Deixar que es moguin lliurement</li>
+                        <li>Permetre'ls grimpar i saltar</li>
+                        <li>Animar a afrontar petits reptes físics</li>
+                        <li>Córrer de forma saludable</li>
+                        <li>Alliberar energia naturalment</li>
+                    </ul>
+                </div>
+                
+                <div class="card play-card">
+                    <div class="card-icon">💪</div>
+                    <h3>Beneficis del Moviment</h3>
+                    <ul>
+                        <li>Desenvolupa equilibri, força i agilitat</li>
+                        <li>Alliberació saludable d'energia</li>
+                        <li>Millora la confiança en si mateixos</li>
+                        <li>Desenvolupa habilitats motores</li>
+                        <li>Contribueix al benestar físic i mental</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>🎯 Quan Animar-los</h3>
+                <p>Si semblen preparats i altres nens de la seva edat ho fan, anima'ls a afrontar petits reptes físics. Això els ajuda a desenvolupar confiança en les seves habilitats i a conèixer els seus límits de manera segura.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 7: PANTALLES -->
+        <section id="screens" class="section">
+            <h1>📱 Reduir el Temps de Pantalla</h1>
+            
+            <div class="highlight">
+                <h3>⚠️ Realitat sobre les Pantalles</h3>
+                <p>És fonamental reduir dràsticament el temps de pantalla, especialment en nens petits, però també en els més grans. Les pantalles, en general, no contribueixen al desenvolupament infantil.</p>
+            </div>
+
+            <h2>🧬 Per què Reduir les Pantalles</h2>
+            <div class="cards-grid">
+                <div class="card simplify-card">
+                    <div class="card-icon">🌍</div>
+                    <h3>Disseny Natural Humà</h3>
+                    <p>Els éssers humans estem dissenyats per créixer en contacte amb el món real, objectes i persones. L'exposició prematura i excessiva a les pantalles pot portar molts més problemes que beneficis.</p>
+                </div>
+                
+                <div class="card simplify-card">
+                    <div class="card-icon">🎯</div>
+                    <h3>Alternatives Reals</h3>
+                    <ul>
+                        <li>Joc amb objectes físics</li>
+                        <li>Interacció amb persones reals</li>
+                        <li>Experiències sensorials directes</li>
+                        <li>Creativitat amb materials tangibles</li>
+                        <li>Desenvolupament motor natural</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 8: GESTIÓ DE CAPRICIS -->
+        <section id="whims" class="section">
+            <h1>🎭 Evitar que els Fills siguin Capriciosos</h1>
+            
+            <div class="quote">
+                "Per aconseguir que els fills no siguin capriciosos, és essencial començar pel propi comportament de l'adult. Si tu ets capriciós, és probable que els teus fills també ho siguin."
+            </div>
+
+            <h2>🪞 Modelar Comportament</h2>
+            <div class="cards-grid">
+                <div class="card simplify-card">
+                    <div class="card-icon">🛍️</div>
+                    <h3>Modificar Hàbits de Consum</h3>
+                    <ul>
+                        <li>Comprar només el necessari al supermercat</li>
+                        <li>Seguir una llista de compra</li>
+                        <li>Ser capaç de sortir al carrer sense comprar res per impuls</li>
+                        <li>Modelar una vida menys associada al consum</li>
+                        <li>Ensenyar que les coses no defineixen el valor</li>
+                    </ul>
+                </div>
+                
+                <div class="card simplify-card">
+                    <div class="card-icon">💝</div>
+                    <h3>Valors Fonamentals</h3>
+                    <p>Ensenyar que el valor d'una persona no resideix en les coses materials que posseeix, ni tan sols en el menjar. La felicitat i el benestar estan en l'equilibri interior i l'amor que l'envolta.</p>
+                </div>
+            </div>
+
+            <h2>🤗 Com Gestionar el "No"</h2>
+            <div class="cards-grid">
+                <div class="card creative-card">
+                    <div class="card-icon">🫂</div>
+                    <h3>Resposta Empàtica</h3>
+                    <p>Quan li dius que no a un fill que demana alguna cosa que no necessita:</p>
+                    <ul>
+                        <li>Mantenir-se tranquil</li>
+                        <li>Acompanyar-lo en la seva frustració</li>
+                        <li>Validar els seus sentiments: "És molt frustrant quan no pots tenir el que vols"</li>
+                        <li>Abraçar-lo</li>
+                        <li>Mantenir fermament la decisió de no comprar</li>
+                    </ul>
+                </div>
+                
+                <div class="card creative-card">
+                    <div class="card-icon">⏰</div>
+                    <h3>Postergar la Gratificació</h3>
+                    <p>Quan desitgin alguna cosa intensament, suggerir que ho demanin per al seu aniversari o Nadal. Si es fa des de petits, aprenen a esperar i a valorar l'esforç i la lluita per les coses.</p>
+                </div>
+            </div>
+
+            <h2>🚫 Que No Fer mai</h2>
+            <div class="highlight">
+                <h3>❌ Evitar Premis Materials</h3>
+                <ul style="margin: 15px 0; padding-left: 25px;">
+                    <li><strong>No premiar amb menjar:</strong> Premiar el bon comportament amb dolços ensenya mals hàbits</li>
+                    <li><strong>No premiar amb objectes:</strong> Premiar èxits acadèmics amb coses materials ensenya que l'esforç es fa només per la recompensa</li>
+                    <li><strong>Premiar adequadament:</strong> L'esforç i les bones actituds s'han de valorar amb paraules de reconeixement, abraçades i connexió emocional</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 9: SIMPLIFICAR OBJECTES -->
+        <section id="simplify-objects" class="section">
+            <h1>🧸 Simplificar l'Entorn Material</h1>
+            
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">L'estructura física de la casa també influeix. Tenir la casa plena de coses, armaris desbordats de roba i muntanyes de joguines pot ser perjudicial.</p>
+
+            <h2>👚 Reducir la Roba</h2>
+            <div class="cards-grid">
+                <div class="card simplify-card">
+                    <div class="card-icon">👕</div>
+                    <h3>Problemes de l'Excés de Roba</h3>
+                    <ul>
+                        <li>Massa decisions diàries: "Què em poso?"</li>
+                        <li>Pot ser aclaparador per als nens</li>
+                        <li>Genera frustració</li>
+                        <li>Dificulta l'organització</li>
+                        <li>Crea desordre visual</li>
+                    </ul>
+                </div>
+                
+                <div class="card simplify-card">
+                    <div class="card-icon">✨</div>
+                    <h3>Beneficis de Tenir Menys</h3>
+                    <ul>
+                        <li>Menys decisions fatigants</li>
+                        <li>Més facilitat per escollir</li>
+                        <li>Organització més senzilla</li>
+                        <li>Menys estrès matinal</li>
+                        <li>Més valoració del que es té</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🎯 Simplificar Joguines</h2>
+            <div class="cards-grid">
+                <div class="card play-card">
+                    <div class="card-icon">🧩</div>
+                    <h3>Realitat de l'Excés</h3>
+                    <p>Quan hi ha una muntanya de joguines, els nens només juguen amb uns pocs i la resta es converteix en "contaminació visual" i trastos que ocupen espai, generen desordre i treuen pau.</p>
+                </div>
+                
+                <div class="card play-card">
+                    <div class="card-icon">🏠</div>
+                    <h3>Beneficis de l'Espai</h3>
+                    <p>Una habitació espaiosa i amb poques coses dona més equilibri interior i sosiego. Els nens no necessiten molts joguines per jugar. Necessiten temps i un entorn segur.</p>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>🎮 Què Desenvolupa el Joc Lliure</h3>
+                <p>El joc lliure amb menys joguines desenvolupa la creativitat, la resolució de problemes, la tolerància a la frustració i habilitats socials com negociar, respectar, empatitzar i arribar a acords.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 10: SELECCIÓ DE JOGUINES -->
+        <section id="toys" class="section">
+            <h1>🎯 Joguines que es Queden vs. que se'n Van</h1>
+            
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">Els millors joguines són aquells que fomenten el joc lliure i la creativitat.</p>
+
+            <div class="toys-section">
+                <div class="keep-toys">
+                    <h3>✅ Joguines que es Queden</h3>
+                    <ul>
+                        <li><strong>Pintures, tisores, paper, cola:</strong> Permeten expressar-se, descarregar tensions, adquirir habilitats manuals</li>
+                        <li><strong>Llibres/Contes:</strong> Nutreixen la ment, el llenguatge, la imaginació</li>
+                        <li><strong>Materials oberts:</strong> Teles, llanes, fils, cordes per crear cabanes, disfresses</li>
+                        <li><strong>Pilotes:</strong> Sempre donen joc per al moviment</li>
+                        <li><strong>Puzzles:</strong> Desenvolupen concentració i resolució de problemes</li>
+                        <li><strong>Jocs de construcció:</strong> Fusta, Lego, fomenten creativitat</li>
+                        <li><strong>Ninots:</strong> Si els agrada cuidar-los o dormir amb ells</li>
+                        <li><strong>Disfresses:</strong> Estimulen imaginació i joc simbòlic</li>
+                        <li><strong>Jocs que imiten el món adult:</strong> Cuinetes, tendes, metges</li>
+                        <li><strong>Jocs de taula:</strong> Fomenten joc en grup i aprendre a perdre</li>
+                    </ul>
+                </div>
+
+                <div class="remove-toys">
+                    <h3>❌ Joguines que se'n Van</h3>
+                    <ul>
+                        <li><strong>Joguines trencades:</strong> Excepte si tenen gran valor sentimental</li>
+                        <li><strong>Joguines repetides:</strong> Eliminar duplicats</li>
+                        <li><strong>Joguines amb llums i sorolls:</strong> Poden sobreestimular i limiten el joc</li>
+                        <li><strong>Joguines de pel·lícules comercials:</strong> Limiten creativitat a reproduir escenes</li>
+                        <li><strong>Joguines amb valors contraris:</strong> Violència, sexisme extrem</li>
+                        <li><strong>Joguines que gairebé no s'usen:</strong> Ocupen espai innecessàriament</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>📦 Com Reduir Joguines</h2>
+            <div class="cards-grid">
+                <div class="card creative-card">
+                    <div class="card-icon">📋</div>
+                    <h3>Estratègies de Reducció</h3>
+                    <ul>
+                        <li>Començar retirant els oblidats sense avisar</li>
+                        <li>Convidar els fills a donar el que ja no vulguin</li>
+                        <li>Posar etiqueta: "per a nens que no en tenen tants"</li>
+                        <li>L'adult pot fer selecció final si cal</li>
+                        <li>Guardar temporalment abans de decidir</li>
+                    </ul>
+                </div>
+                
+                <div class="card creative-card">
+                    <div class="card-icon">💬</div>
+                    <h3>Si Demanen Alguna Cosa Donada</h3>
+                    <p>És una oportunitat per ser honest, reconèixer l'error si s'escau, explicar que ja no hi és i validar el possible enfado o tristesa. Són moments d'aprenentatge sobre les conseqüències i l'acceptació.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 11: SIMPLIFICAR ACTIVITATS -->
+        <section id="activities" class="section">
+            <h1>⚽ Reduir Activitats Extraescolars</h1>
+            
+            <div class="quote">
+                "Els nens (i adults) estan sovint sobreestimulats amb agendes frenètiques. Tantes activitats, sumades al col·legi i els deures, poden generar molta tensió interna."
+            </div>
+
+            <h2>⚠️ Senyals de Sobreestimulació</h2>
+            <div class="cards-grid">
+                <div class="card rhythm-card">
+                    <div class="card-icon">😤</div>
+                    <h3>Símptomes en els Nens</h3>
+                    <ul>
+                        <li>Estan "insoportables"</li>
+                        <li>Repten constantment</li>
+                        <li>No escolten</li>
+                        <li>Agressivitat aparent</li>
+                        <li>Hiperactivitat</li>
+                        <li>Dificultats per relaxar-se</li>
+                    </ul>
+                </div>
+                
+                <div class="card rhythm-card">
+                    <div class="card-icon">🏠</div>
+                    <h3>Necessitats Reals</h3>
+                    <ul>
+                        <li>Temps per estar a casa</li>
+                        <li>Jugar lliurement</li>
+                        <li>Avorrir-se de tant en tant</li>
+                        <li>Estar tranquils sense instruccions</li>
+                        <li>Ser ells mateixos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🎯 Criteris per Escollir Activitats</h2>
+            <div class="highlight">
+                <h3>✅ Preguntes Clau</h3>
+                <ul style="margin: 15px 0; padding-left: 25px;">
+                    <li>Li sent bé al nen aquesta activitat?</li>
+                    <li>La gaudeix i la demana?</li>
+                    <li>És per a ell o per a les expectatives dels pares?</li>
+                    <li>Ho fan "tots" o realment li convé?</li>
+                    <li>Tenim temps per "respirar" després?</li>
+                </ul>
+                <p><strong>Recordatori:</strong> Després de cada activitat estructurada és important deixar temps de descans perquè els nens puguin "respirar" i recuperar-se.</p>
+            </div>
+
+            <h2>💭 La Importància de l'Avorriment</h2>
+            <div class="cards-grid">
+                <div class="card rhythm-card">
+                    <div class="card-icon">🌟</div>
+                    <h3>Beneficis dels Temps Morts</h3>
+                    <ul>
+                        <li>Són la cuna de la creativitat</li>
+                        <li>Permeten connexió profunda</li>
+                        <li>Contrasten amb el consum constant d'estímuls</li>
+                        <li>Generen idees noves</li>
+                        <li>Desenvolupen la capacitat d'autoentreteniment</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 12: RITMES I RUTINES -->
+        <section id="rhythms" class="section">
+            <h1>⏰ Establir Ritmes Senzills i Predictibles</h1>
+            
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">Establir ritmes senzills, consistents i predictibles en el dia a dia i la setmana dona molta seguretat als nens i redueix l'ansietat.</p>
+
+            <h2>📅 Beneficis dels Ritmes</h2>
+            <div class="cards-grid">
+                <div class="card rhythm-card">
+                    <div class="card-icon">🛡️</div>
+                    <h3>Seguretat i Estabilitat</h3>
+                    <ul>
+                        <li>Saben què esperar</li>
+                        <li>Minimitza conflictes</li>
+                        <li>Redueix el "cansament d'elegir"</li>
+                        <li>Dona estructura al temps</li>
+                        <li>Genera sensació de control</li>
+                    </ul>
+                </div>
+                
+                <div class="card rhythm-card">
+                    <div class="card-icon">🎉</div>
+                    <h3>Tipus de Ritmes</h3>
+                    <ul>
+                        <li><strong>Diaris:</strong> Àpats a hores similars</li>
+                        <li><strong>Setmanals:</strong> Tasques repetitives, plans especials</li>
+                        <li><strong>Estacionals:</strong> Decorar segons l'estació</li>
+                        <li><strong>Celebracions:</strong> Festes tradicionals</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🍽️ El Menjar com a Ritual</h2>
+            <div class="cards-grid">
+                <div class="card creative-card">
+                    <div class="card-icon">🕯️</div>
+                    <h3>Fer Especial el Menjar</h3>
+                    <ul>
+                        <li>Evitar aliments molt processats</li>
+                        <li>Eliminar envases que semblen joguines</li>
+                        <li>Posar la taula amb cura</li>
+                        <li>Encendre una espelma</li>
+                        <li>Tenir un moment d'agraïment</li>
+                        <li>Convertir-ho en petite celebració familiar</li>
+                    </ul>
+                </div>
+                
+                <div class="card creative-card">
+                    <div class="card-icon">⚖️</div>
+                    <h3>Actitud Relaxada</h3>
+                    <p>No obsessionar-se amb la quantitat que mengen si segueixen una dieta saludable. Els nens tendeixen a autorregular-se naturalment quan l'ambient és relaxat i positiu.</p>
+                </div>
+            </div>
+
+            <h2>😴 La Importància del Son</h2>
+            <div class="highlight">
+                <h3>🌙 Son Natural</h3>
+                <p>Idealment, els nens (i adults) haurien de despertar-se de forma natural, sense despertador, per assegurar que dormen el que necessiten. Si cal despertar-los, vol dir que necessiten anar a dormir abans per completar les seves hores de son, crucials per al creixement i desenvolupament cerebral.</p>
+                <p><strong>Recordatori important:</strong> No hi ha res dolent que un nen necessiti anar a dormir molt d'hora.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 13: PROTEGIR L'ESPAI INFANTIL -->
+        <section id="protection" class="section">
+            <h1>🛡️ Protegir l'Espai i el Món dels Nens</h1>
+            
+            <div class="quote">
+                "És important reduir la intervenció adulta en el món dels nens i protegir el seu espai per permetre que es desenvolupin naturalment."
+            </div>
+
+            <h2>🔒 Què Filtrar</h2>
+            <div class="cards-grid">
+                <div class="card simplify-card">
+                    <div class="card-icon">📰</div>
+                    <h3>Notícies i Contingut Angustiós</h3>
+                    <ul>
+                        <li>Filtrar notícies violentas o angustioses</li>
+                        <li>El món d'un nen ha de sentir-se segur</li>
+                        <li>Les notícies són per a adults</li>
+                        <li>Si cal informar, fer-ho de manera calmada</li>
+                        <li>Assegurar-los que estan a salv</li>
+                    </ul>
+                </div>
+                
+                <div class="card simplify-card">
+                    <div class="card-icon">💭</div>
+                    <h3>Preocupacions d'Adults</h3>
+                    <ul>
+                        <li>No abocar preocupacions o problemes d'adults</li>
+                        <li>Ells els adopten com a propis</li>
+                        <li>Poden sentir-se insegurs o responsables</li>
+                        <li>Gestionar en privat o entre adults</li>
+                        <li>Mantenir el seu món segur</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🎮 Respectar el seu Joc</h2>
+            <div class="cards-grid">
+                <div class="card play-card">
+                    <div class="card-icon">🤫</div>
+                    <h3>Quan No Intervenir</h3>
+                    <ul>
+                        <li>Quan estan jugant o concentrats</li>
+                        <li>Evitar dirigir el seu joc constantment</li>
+                        <li>No ajudar immediatament amb cada dificultat</li>
+                        <li>No intentar que juguin amb altres si són feliços sols</li>
+                        <li>Deixar-los resoldre conflictes propis (si no són danyins)</li>
+                    </ul>
+                </div>
+                
+                <div class="card play-card">
+                    <div class="card-icon">🌱</div>
+                    <h3>Beneficis de la No Intervenció</h3>
+                    <ul>
+                        <li>Aprenen negociació</li>
+                        <li>Desenvolupen tolerància a la frustració</li>
+                        <li>Troben les seves pròpies solucions</li>
+                        <li>Creix la seva autonomia</li>
+                        <li>Enforteix la confiança en si mateixos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>⚠️ Quan Sí Intervenir</h2>
+            <div class="highlight">
+                <h3>🚨 Límits Necessaris</h3>
+                <p>Només cal intervenir quan el seu comportament és perjudicial per a ells mateixos o per a altres. La resta del temps, permetre'ls explorar, experimentar i aprendre de les seves pròpies experiències.</p>
+            </div>
+        </section>
+
+        <!-- REFLEXIÓ FINAL -->
+        <section class="section">
+            <div class="highlight" style="background: linear-gradient(120deg, rgba(0, 184, 148, 0.15), rgba(0, 206, 201, 0.15)); border-left-color: #00b894;">
+                <h3>🌟 Reflexió Final</h3>
+                <p style="font-size: 1.2rem; text-align: center; font-weight: 600; color: #00b894;">
+                    Simplificar la vida familiar (menys coses, menys activitats, menys soroll extern i preocupació adulta, ritmes predictibles i senzills) permet als nens i als adults tenir més pau, equilibri, menys sobreestimulació i més temps i espai per al joc lliure, la connexió, la creativitat i el desenvolupament intern.
+                </p>
+                <p style="text-align: center; margin-top: 20px; font-size: 1.1rem;">
+                    Aquestes són les coses que veritablement importen perquè creixin sans, feliços i gaudeixin de la vida. 🌸
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const sections = document.querySelectorAll('.section');
+            const progressBar = document.getElementById('progressBar');
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menuToggle');
+
+            // Navegació smooth scroll
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    
+                    // Actualitzar classe activa
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Scroll suau amb offset per evitar solapament
+                    const offsetTop = targetSection.offsetTop - 20;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Tancar menú mòbil
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            });
+
+            // Barra de progrés i navegació activa
+            window.addEventListener('scroll', function() {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                progressBar.style.width = scrolled + '%';
+
+                // Detectar secció actual
+                let currentSection = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 100;
+                    const sectionBottom = sectionTop + section.clientHeight;
+                    if (window.pageYOffset >= sectionTop && window.pageYOffset < sectionBottom) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
+
+                // Actualitzar navegació activa
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('href') === '#' + currentSection) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+
+            // Gestió menú mòbil
+            function checkScreenSize() {
+                if (window.innerWidth <= 768) {
+                    menuToggle.style.display = 'block';
+                } else {
+                    menuToggle.style.display = 'none';
+                    sidebar.classList.remove('active');
+                }
+            }
+
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                });
+            }
+
+            // Tancar menú en clic fora
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768 && !sidebar.contains(e.target) && e.target !== menuToggle) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            checkScreenSize();
+            window.addEventListener('resize', checkScreenSize);
+        });
+    </script>
+</body>
+</html>

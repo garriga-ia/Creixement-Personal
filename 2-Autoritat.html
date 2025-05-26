@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relájate y Educa - Criança amb Autoritat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2d3436;
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 50%, #a29bfe 100%);
+        }
+
+        /* Barra de progrés */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(to right, #00b894, #00cec9);
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            box-shadow: 2px 0 25px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+            overflow-y: auto;
+            padding: 20px 0;
+            border-right: 3px solid #fd79a8;
+        }
+
+        .sidebar h2 {
+            padding: 0 20px 20px;
+            color: #e84393;
+            border-bottom: 2px solid #f1f2f6;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #636e72;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: linear-gradient(90deg, rgba(253, 121, 168, 0.1), rgba(232, 67, 147, 0.05));
+            color: #e84393;
+            border-left-color: #fd79a8;
+            transform: translateX(8px);
+        }
+
+        /* Contingut principal */
+        .main-content {
+            margin-left: 280px;
+            padding: 20px 40px;
+            min-height: 100vh;
+        }
+
+        /* Seccions - IMPORTANT: Separació clara */
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            padding: 50px 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            /* IMPORTANT: Evitar solapaments */
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Primera secció més destacada */
+        .hero-section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(253, 121, 168, 0.05));
+            padding: 80px 40px;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section h1 {
+            font-size: 2.8rem;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, #e84393, #fd79a8, #a29bfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            margin: 35px 0 20px 0;
+            color: #e84393;
+            font-weight: 700;
+            border-left: 5px solid #fd79a8;
+            padding-left: 20px;
+        }
+
+        .section h3 {
+            font-size: 1.4rem;
+            margin: 25px 0 15px 0;
+            color: #6c5ce7;
+            font-weight: 600;
+        }
+
+        .section p, .section li {
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+            color: #2d3436;
+            line-height: 1.7;
+        }
+
+        .section ul {
+            margin: 15px 0 25px 25px;
+        }
+
+        /* Cards amb separació clara */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid #00b894;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h3 {
+            color: #00b894;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+            display: block;
+        }
+
+        /* Tipus de cards diferents */
+        .model-card {
+            border-left-color: #e17055;
+        }
+
+        .model-card h3 {
+            color: #e17055;
+        }
+
+        .strategy-card {
+            border-left-color: #00cec9;
+        }
+
+        .strategy-card h3 {
+            color: #00cec9;
+        }
+
+        .tip-card {
+            border-left-color: #fdcb6e;
+        }
+
+        .tip-card h3 {
+            color: #fdcb6e;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(120deg, rgba(116, 185, 255, 0.15), rgba(162, 155, 254, 0.15));
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 5px solid #6c5ce7;
+            border: 1px solid rgba(108, 92, 231, 0.2);
+        }
+
+        .quote {
+            font-style: italic;
+            font-size: 1.2rem;
+            text-align: center;
+            color: #636e72;
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(120deg, rgba(253, 121, 168, 0.1), rgba(162, 155, 254, 0.1));
+            border-radius: 15px;
+            border-left: 4px solid #fd79a8;
+            font-weight: 500;
+        }
+
+        /* Taules */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, #e84393, #fd79a8);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background-color: rgba(253, 121, 168, 0.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .section {
+                padding: 30px 20px;
+                margin-bottom: 25px;
+            }
+
+            .hero-section {
+                padding: 50px 20px;
+            }
+
+            .section h1 {
+                font-size: 2.2rem;
+            }
+
+            .section h2 {
+                font-size: 1.6rem;
+            }
+
+            .menu-toggle {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1001;
+                background: #e84393;
+                color: white;
+                border: none;
+                padding: 12px;
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 1.2rem;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll suau */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animacions suaus */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de progrés -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Botó menú mòbil -->
+    <button class="menu-toggle" id="menuToggle" style="display: none;">☰</button>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <h2>📚 Contingut</h2>
+        <a href="#intro" class="nav-item active">🏠 Introducció</a>
+        <a href="#models" class="nav-item">⚖️ Models de Criança</a>
+        <a href="#authority" class="nav-item">👑 Construint Autoritat</a>
+        <a href="#routines" class="nav-item">⏰ Rutines Efectives</a>
+        <a href="#communication" class="nav-item">💬 Comunicació Clara</a>
+        <a href="#frustration" class="nav-item">😤 Gestió Frustració</a>
+        <a href="#strategies" class="nav-item">🎯 Estratègies Pràctiques</a>
+        <a href="#problems" class="nav-item">🔧 Resolució Problemes</a>
+    </nav>
+
+    <!-- Contingut principal -->
+    <main class="main-content">
+        
+        <!-- SECCIÓ 1: INTRODUCCIÓ -->
+        <section id="intro" class="section hero-section">
+            <h1>🌟 Relájate y Educa</h1>
+            
+            <div class="quote">
+                "L'objectiu és ajudar-te a construir la teva autoritat com a figura guia en la vida dels nens, perquè et segueixin de forma natural."
+            </div>
+            
+            <div class="highlight">
+                <h3>💡 La Imatge Desitjada</h3>
+                <p>Ser com el flautista del conte: algú que sap quin camí prendre i avança amb seguretat, i els nens el segueixen amb confiança.</p>
+            </div>
+
+            <p style="font-size: 1.2rem; margin-top: 30px; font-weight: 500;">
+                Aquesta guia completa sobre criança amb autoritat et donarà les claus per ser un líder segur i connectat per als teus fills. Construiràs la teva autoritat des de la connexió, no des de la força.
+            </p>
+        </section>
+
+        <!-- SECCIÓ 2: MODELS DE CRIANÇA -->
+        <section id="models" class="section">
+            <h1>⚖️ Els Tres Models de Criança</h1>
+            
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">Existeixen tres models principals de criança. El nostre objectiu és el model amb autoritat, que es troba en l'equilibri perfecte.</p>
+            
+            <div class="cards-grid">
+                <div class="card model-card">
+                    <div class="card-icon">🤝</div>
+                    <h3>Pare/Mare Permisiu</h3>
+                    <p><strong>Característiques:</strong></p>
+                    <ul>
+                        <li>Molta connexió amb els fills</li>
+                        <li>Poques normes o límits clars</li>
+                        <li>Evita la frustració dels fills</li>
+                        <li>Més amic que pare/mare</li>
+                        <li>Democràcia excessiva</li>
+                    </ul>
+                    <p><strong>Problema:</strong> Els nens necessiten un guia ferm per desenvolupar seguretat interna. Ser només "colega" no és suficient.</p>
+                </div>
+
+                <div class="card model-card">
+                    <div class="card-icon">⚔️</div>
+                    <h3>Pare/Mare Autoritari</h3>
+                    <p><strong>Característiques:</strong></p>
+                    <ul>
+                        <li>Moltes normes i expectatives</li>
+                        <li>Poca connexió emocional</li>
+                        <li>Ús de grits, castigs i amenaces</li>
+                        <li>Com un "General de l'exèrcit"</li>
+                        <li>Prioritza obediència sobre emocions</li>
+                    </ul>
+                    <p><strong>Problema:</strong> No té en compte les emocions ni necessitats dels fills. No hi ha connexió real.</p>
+                </div>
+
+                <div class="card model-card">
+                    <div class="card-icon">👑</div>
+                    <h3>Pare/Mare amb Autoritat (IDEAL)</h3>
+                    <p><strong>Característiques:</strong></p>
+                    <ul>
+                        <li>Equilibri entre connexió i límits</li>
+                        <li>Escolta i entén els fills</li>
+                        <li>No usa castigs ni amenaces</li>
+                        <li>Sap el rumb i pren decisions</li>
+                        <li>Autoritat des de la connexió</li>
+                    </ul>
+                    <p><strong>Resultat:</strong> Els nens interioritzen els comportaments desitjats de forma natural i desenvolupen seguretat interna.</p>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>🎯 Clau Fonamental</h3>
+                <p>Els nens necessiten saber que estan en mans d'algú que coneix el camí millor que ells. Escuchar als fills no significa dir sí a tot, sinó conèixer-los millor i generar respecte mutu.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 3: CONSTRUINT AUTORITAT -->
+        <section id="authority" class="section">
+            <h1>👑 Construint Autoritat amb Connexió</h1>
+            
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">Per visualitzar aquest rol de lideratge, pensa en diferents models que admires i que tenen autoritat natural:</p>
+            
+            <div class="cards-grid">
+                <div class="card strategy-card">
+                    <div class="card-icon">⚓</div>
+                    <h3>Capitana d'un Vaixell</h3>
+                    <p>Coneix la ruta, té responsabilitat i és seguida pel seu coneixement i seguretat. Navega amb experiència i confiança fins i tot en tempestes.</p>
+                </div>
+                
+                <div class="card strategy-card">
+                    <div class="card-icon">✈️</div>
+                    <h3>Pilot d'Avió</h3>
+                    <p>Expertesa tècnica, calma en situacions difícils i confiança total dels passatgers. Manté el rumb fins i tot en turbulències.</p>
+                </div>
+                
+                <div class="card strategy-card">
+                    <div class="card-icon">🦸‍♀️</div>
+                    <h3>Superheroïna</h3>
+                    <p>Protegeix, guia amb valors clars i inspira confiança absoluta. Actua sempre pensant en el bé comú i la protecció dels altres.</p>
+                </div>
+                
+                <div class="card strategy-card">
+                    <div class="card-icon">🎼</div>
+                    <h3>Directora d'Orquestra</h3>
+                    <p>Coordina amb maestria, dirigeix amb passió i crea harmonia perfecta en el conjunt. Cada músic té el seu paper important.</p>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>💡 Reflexió Important</h3>
+                <p>Si apliques les teves virtuts de lideratge fora de casa (feina, esports, voluntariat), intenta interioritzar aquestes mateixes virtuts i aplicar-les també a casa amb els teus fills. Ets capaç de liderar, només cal que ho portis a l'àmbit familiar.</p>
+            </div>
+
+            <h2>🎧 Escolta Selectiva: Clau de l'Autoritat</h2>
+            <div class="cards-grid">
+                <div class="card tip-card">
+                    <div class="card-icon">👂</div>
+                    <h3>Quan Escoltar</h3>
+                    <ul>
+                        <li>Per connectar i conèixer-los millor</li>
+                        <li>Quan volen compartir alguna cosa</li>
+                        <li>Per entendre les seves emocions</li>
+                        <li>En moments de calma i tranquil·litat</li>
+                    </ul>
+                </div>
+                
+                <div class="card tip-card">
+                    <div class="card-icon">🙉</div>
+                    <h3>Quan NO Escoltar</h3>
+                    <ul>
+                        <li>Protestes en moments de crisi</li>
+                        <li>Quan han de fer alguna cosa necessària</li>
+                        <li>Arguments per evitar responsabilitats</li>
+                        <li>Quan ja estan fent l'acció correcta</li>
+                    </ul>
+                    <p><strong>Consell:</strong> Sigues "sorda, cega i muda" a la protesta verbal quan estan fent el que demanes.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 4: RUTINES EFECTIVES -->
+        <section id="routines" class="section">
+            <h1>⏰ El Poder de les Rutines</h1>
+            
+            <div class="quote">
+                "La millor disciplina és una bona rutina"
+            </div>
+
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">Una rutina ben estructurada proporciona seguretat, previsibilitat i claritat per a tota la família, reduint enormement els conflictes diaris.</p>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">🔒</div>
+                    <h3>Beneficis de les Rutines</h3>
+                    <ul>
+                        <li>Proporcionen seguretat i previsibilitat</li>
+                        <li>Redueixen conflictes familiars</li>
+                        <li>Els nens saben què esperar i quan</li>
+                        <li>Faciliten l'autoregulació</li>
+                        <li>Creen tranquil·litat per a tots</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">📅</div>
+                    <h3>Consistència vs. Arbitrarietat</h3>
+                    <p><strong>Consistència:</strong> Mantenir les mateixes normes cada dia genera seguretat i confiança.</p>
+                    <p><strong>Arbitrarietat:</strong> Canviar normes constantment crea inseguretat i impulsa els nens a "empényer" els límits.</p>
+                    <p class="highlight" style="margin-top: 15px; padding: 10px; background: rgba(0, 206, 201, 0.1); border-radius: 8px;">La consistència és una fortalesa clau per a la família.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">🎯</div>
+                    <h3>Moments Clau per Estructurar</h3>
+                    <ul>
+                        <li>Llevar-se i rutina matinal</li>
+                        <li>Àpats i berenars</li>
+                        <li>Temps de pantalles i tecnologia</li>
+                        <li>Recollir joguines i ordre</li>
+                        <li>Higiene personal i bany</li>
+                        <li>Hora d'anar a dormir</li>
+                        <li>Transport i activitats</li>
+                        <li>Tasques domèstiques</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>🛠️ Consells Pràctics d'Implementació</h3>
+                <ul style="margin: 15px 0; padding-left: 25px;">
+                    <li>Usa calendaris visuals amb dibuixos per als més petits</li>
+                    <li>Identifica els moments de conflicte habituals</li>
+                    <li>Adapta les rutines amb el temps, però manté consistència</li>
+                    <li>Fes que tota la família conegui les rutines</li>
+                    <li>Sigues pacient durant el període d'adaptació</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 5: COMUNICACIÓ CLARA -->
+        <section id="communication" class="section">
+            <h1>💬 Comunicació que Realment Funciona</h1>
+            
+            <h2>❌ Evita les Preguntes de Responsabilitat Adult</h2>
+            
+            <p style="margin-bottom: 25px;">Moltes vegades fem preguntes que semblen amables però que en realitat deleguen decisions que no corresponen al nen:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 35%;">❌ NO Diguis</th>
+                        <th style="width: 35%;">✅ SÍ Diguis</th>
+                        <th style="width: 30%;">Motiu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>"Vols berenar ara?"</td>
+                        <td>"És l'hora de berenar"</td>
+                        <td>L'horari no és decisió del nen</td>
+                    </tr>
+                    <tr>
+                        <td>"Et vols posar l'abric?"</td>
+                        <td>"Fa fred, posa't l'abric"</td>
+                        <td>La salut és responsabilitat adulta</td>
+                    </tr>
+                    <tr>
+                        <td>"Ens rentem les dents?"</td>
+                        <td>"És l'hora de rentar-se les dents"</td>
+                        <td>La higiene no és negociable</td>
+                    </tr>
+                    <tr>
+                        <td>"Recolls les joguines?"</td>
+                        <td>"Les joguines han de tornar al seu lloc"</td>
+                        <td>L'ordre és una responsabilitat a aprendre</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>🎯 Parla de l'Acció, No de la Persona</h2>
+            <p style="margin-bottom: 25px;">Canvia l'enfocament per reduir la sensació de crítica constant:</p>
+            
+            <div class="cards-grid">
+                <div class="card tip-card">
+                    <div class="card-icon">❌</div>
+                    <h3>Enfocament Problemàtic</h3>
+                    <ul>
+                        <li>"Lluís, has tornat a embrutar-te"</li>
+                        <li>"Maria, sempre deixes les sabates aquí"</li>
+                        <li>"No fas mai cas"</li>
+                        <li>"Ets molt desordenat"</li>
+                        <li>"Sempre et queixes"</li>
+                    </ul>
+                    <p style="margin-top: 15px; color: #e17055;"><strong>Problema:</strong> Ataca la persona, genera defensivitat.</p>
+                </div>
+                
+                <div class="card tip-card">
+                    <div class="card-icon">✅</div>
+                    <h3>Enfocament Efectiu</h3>
+                    <ul>
+                        <li>"Veig una samarreta que necessita ajuda"</li>
+                        <li>"Les sabates busquen casa seva"</li>
+                        <li>"Els contes volen dormir a la prestatge"</li>
+                        <li>"El raspall de dents espera al bany"</li>
+                        <li>"Les joguines necessiten ordre"</li>
+                    </ul>
+                    <p style="margin-top: 15px; color: #00cec9;"><strong>Benefici:</strong> Redueix crítica personal, fomenta col·laboració.</p>
+                </div>
+            </div>
+
+            <h2>🎭 Humor i Creativitat en la Comunicació</h2>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">😄</div>
+                    <h3>Converteix Tasques en Jocs</h3>
+                    <ul>
+                        <li>Rentar dents = escombrar catifes màgiques</li>
+                        <li>Un vessament = una inundació a controlar</li>
+                        <li>Anar al cole sense trepitjar ratlles</li>
+                        <li>Recollir joguines = missió de rescat</li>
+                        <li>Vestir-se = transformar-se en superheroï</li>
+                        <li>Menjar verdures = fer-se fort com Popeye</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">⏰</div>
+                    <h3>Transicions Suaus</h3>
+                    <p>Anticipa els canvis per reduir resistència:</p>
+                    <ul>
+                        <li>"En 5 minuts apaguem la tele"</li>
+                        <li>"Encara dues rodolades més al parc"</li>
+                        <li>"Després d'aquest conte, a dormir"</li>
+                        <li>"Un minut més de joc i després recollim"</li>
+                    </ul>
+                    <p style="margin-top: 15px;">Pots usar cançons senzilles o comptatges per fer-ho més divertit.</p>
+                </div>
+            </div>
+
+            <h2>📝 Estratègies per als Més Grans (8+ anys)</h2>
+            <div class="highlight">
+                <h3>✍️ Comunicació Escrita Efectiva</h3>
+                <ul style="margin: 15px 0; padding-left: 25px;">
+                    <li>Notes amb recordatoris en llocs visibles</li>
+                    <li>Missatges divertits en avions de paper</li>
+                    <li>Calendaris de tasques visuals i clars</li>
+                    <li>Contractes escrits per responsabilitats</li>
+                    <li>Alarmes al telèfon amb missatges personalitzats</li>
+                </ul>
+                <p><strong>Benefici:</strong> Dona autonomia i redueix el paper d'adult recordatori constant.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 6: GESTIÓ DE LA FRUSTRACIÓ -->
+        <section id="frustration" class="section">
+            <h1>😤 La Frustració: Una Aliada Necessària</h1>
+            
+            <div class="quote">
+                "No pateixis quan els teus fills es frustren. La frustració és bona i necessària per al seu desenvolupament i futur benestar."
+            </div>
+
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">Un dels errors més comuns és pensar que els nens sempre han d'estar feliços. La realitat és que la frustració els prepara per a la vida real.</p>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">💪</div>
+                    <h3>Beneficis de la Frustració Controlada</h3>
+                    <ul>
+                        <li>Prepara per a la vida real i les seves dificultats</li>
+                        <li>Enforteix el caràcter i desenvolupa resiliència</li>
+                        <li>Ensenya que no sempre es té el que es vol</li>
+                        <li>Ajuda a aprendre a esperar i renunciar</li>
+                        <li>Desenvolupa tolerància al "no" i als límits</li>
+                        <li>Fomenta creativitat per trobar alternatives</li>
+                        <li>Construeix autocontrol i paciència</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">⚖️</div>
+                    <h3>Perspectiva a Llarg Termini</h3>
+                    <p><strong>Prioritza sempre:</strong> Benestar futur > Comoditat immediata</p>
+                    <p style="margin: 15px 0;">Pensa en què necessita aprendre per ser:</p>
+                    <ul>
+                        <li>Bon ciutadà respectuós</li>
+                        <li>Treballador responsable</li>
+                        <li>Persona generosa i empàtica</li>
+                        <li>Adult capaç de gestionar dificultats</li>
+                        <li>Persona amb relacions sanes</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>Realitat:</strong> Un adult que no ha après a gestionar frustració tindrà problemes laborals, de parella i socials.</p>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>⚠️ Perill dels Nens "Sempre Feliços"</h3>
+                <p>Pensar que sempre han d'estar contents i sense frustració porta a crear:</p>
+                <ul style="margin: 15px 0; padding-left: 25px;">
+                    <li>Nens capriciosos amb baixa tolerància al "no"</li>
+                    <li>Dificultats per adaptar-se a la vida adulta</li>
+                    <li>Problemes en relacions interpersonals</li>
+                    <li>Dificultats en l'àmbit laboral i responsabilitats</li>
+                    <li>Baixa resiliència davant reptes</li>
+                </ul>
+                <p><strong>Conclusió:</strong> La vida real inclou frustració. És millor que aprenguin a gestionar-la des de petits en un entorn segur.</p>
+            </div>
+
+            <h2>🚫 No Mostris els Teus Dubtes</h2>
+            <div class="cards-grid">
+                <div class="card strategy-card">
+                    <div class="card-icon">🎯</div>
+                    <h3>Fermesa i Seguretat</h3>
+                    <p>Els nens necessiten un líder ferm i segur. Si dubtes:</p>
+                    <ul>
+                        <li>Ells ho noten immediatament</li>
+                        <li>Es confonen i perden confiança</li>
+                        <li>Deixes de ser un guia clar</li>
+                        <li>Augmenten les proves de límits</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>Procés correcte:</strong> Dubta internament → Decideix → Comunica amb fermesa</p>
+                </div>
+                
+                <div class="card strategy-card">
+                    <div class="card-icon">🎪</div>
+                    <h3>Evita Contradiccions</h3>
+                    <p>Les ordres contradictòries confonen i debiliten la teva autoritat:</p>
+                    <ul>
+                        <li>Pensa abans de parlar</li>
+                        <li>No canviïs decisions constantment</li>
+                        <li>Si et vas equivocar, reconeix-ho i explica el canvi</li>
+                        <li>Mantén coherència entre el que dius i fas</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 7: ESTRATÈGIES PRÀCTIQUES -->
+        <section id="strategies" class="section">
+            <h1>🎯 Estratègies Diàries que Funcionen</h1>
+            
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">Aquestes estratègies pràctiques t'ajudaran a aplicar la criança amb autoritat en situacions reals del dia a dia.</p>
+            
+            <div class="cards-grid">
+                <div class="card strategy-card">
+                    <div class="card-icon">👶</div>
+                    <h3>Comprèn que els Nens són Nens</h3>
+                    <p>Ajusta les teves expectatives a la realitat evolutiva:</p>
+                    <ul>
+                        <li>Rompen coses (és normal)</li>
+                        <li>Griten quan s'emocionen</li>
+                        <li>Desordenen jugant</li>
+                        <li>Es manchen menjant</li>
+                        <li>Es cauen i es fan mal</li>
+                        <li>Es mouen molt (necessitat física)</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>Regla d'or:</strong> Només corregeix desobediència intencionada, no comportaments propis de la seva edat.</p>
+                </div>
+                
+                <div class="card strategy-card">
+                    <div class="card-icon">🌟</div>
+                    <h3>Comentaris Positius Primer</h3>
+                    <p>Reconeix qualitats abans de demanar accions:</p>
+                    <ul>
+                        <li>"Quin artist ets! M'encanta com dibuixes. Ara és hora d'anar a dormir."</li>
+                        <li>"Quina energia tens! Ets súper divertida. Ara toca recollir."</li>
+                        <li>"Veus com de bé jugues! Ara necessites descansar."</li>
+                    </ul>
+                    <p style="margin-top: 15px;">Aquest enfocament redueix resistència i crea connexió abans de la instrucció.</p>
+                </div>
+                
+                <div class="card strategy-card">
+                    <div class="card-icon">🎮</div>
+                    <h3>Gamificació de Tasques</h3>
+                    <p>Converteix obligacions en jocs divertits:</p>
+                    <ul>
+                        <li><strong>Recollir:</strong> "Missió de rescat per les joguines"</li>
+                        <li><strong>Caminar:</strong> "No trepitjar ratlles del terra"</li>
+                        <li><strong>Vestir-se:</strong> "Transformació en superheroï"</li>
+                        <li><strong>Esperar:</strong> "Joc de l'estàtua" o comptar coses</li>
+                        <li><strong>Neteja:</strong> "Una inundació!" per vessaments</li>
+                    </ul>
+                </div>
+                
+                <div class="card strategy-card">
+                    <div class="card-icon">🎪</div>
+                    <h3>Gestió de Capricis</h3>
+                    <p><strong>Norma general:</strong> Capricis només en dies especials</p>
+                    <ul>
+                        <li>Cumpleaños i celebracions</li>
+                        <li>Vacances especials</li>
+                        <li>Dies designats per la família</li>
+                    </ul>
+                    <p style="margin: 15px 0;"><strong>Respostes fermes:</strong></p>
+                    <ul>
+                        <li>"Ja saps que això és per al teu cumpleaños"</li>
+                        <li>"Se menja el que hi ha"</li>
+                        <li>"És l'hora d'apagar l'ordinador"</li>
+                    </ul>
+                    <p><strong>Important:</strong> No etiquetis ni jutgis per voler alguna cosa. Simplement manté el límit.</p>
+                </div>
+            </div>
+
+            <h2>🍽️ Àmbits de Decisió per Edats</h2>
+            <div class="highlight">
+                <h3>👶 Nens Petits (3-6 anys)</h3>
+                <p><strong>Poden decidir:</strong></p>
+                <ul style="margin: 10px 0; padding-left: 25px;">
+                    <li>Quin roba posar-se (del que està a l'armari)</li>
+                    <li>A què jugar al parc</li>
+                    <li>Quin conte llegir</li>
+                    <li>Què menjar de l'oferit a taula</li>
+                </ul>
+                <p><strong>Adults decideixen:</strong> Roba a comprar, si van al parc, menú, horaris bàsics, seguretat.</p>
+                
+                <h3>🧒 Nens Grans (7+ anys)</h3>
+                <p>Ampliar gradualment l'àmbit de decisions mantenint responsabilitats bàsiques sota control adult.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 8: RESOLUCIÓ DE PROBLEMES -->
+        <section id="problems" class="section">
+            <h1>🔧 Resolent Problemes en Equip</h1>
+            
+            <div class="quote">
+                "L'objectiu és passar de ser el 'dolent' que imposa regles a ser l'equip que resol problemes junts."
+            </div>
+            
+            <h2>🔄 Canvi de Paradigma: De Conseqüències a Solucions</h2>
+            
+            <div class="cards-grid">
+                <div class="card tip-card">
+                    <div class="card-icon">❌</div>
+                    <h3>Enfocament Tradicional</h3>
+                    <p><strong>Exemple:</strong></p>
+                    <p style="margin: 10px 0; font-style: italic;">"Si no et rentes les dents, no hi ha conte"</p>
+                    <p><strong>Problemes:</strong></p>
+                    <ul>
+                        <li>Crea lluita de poder</li>
+                        <li>Genera resistència</li>
+                        <li>No ensenya a resoldre</li>
+                        <li>Enfocament punitiu</li>
+                    </ul>
+                </div>
+                
+                <div class="card tip-card">
+                    <div class="card-icon">✅</div>
+                    <h3>Enfocament Col·laboratiu</h3>
+                    <p><strong>Exemple:</strong></p>
+                    <p style="margin: 10px 0; font-style: italic;">"Tenim un problema. La mama vol que et rentis les dents i és molt important. Què podem fer per solucionar-ho?"</p>
+                    <p><strong>Beneficis:</strong></p>
+                    <ul>
+                        <li>Convida a participar</li>
+                        <li>Fomenta responsabilitat</li>
+                        <li>Desenvolupa habilitats</li>
+                        <li>Crea cooperació</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🎯 Exemples Pràctics de Resolució Col·laborativa</h2>
+            
+            <table style="margin: 30px 0;">
+                <thead>
+                    <tr>
+                        <th>Situació</th>
+                        <th>Plantejament Col·laboratiu</th>
+                        <th>Possibles Solucions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>No vol recollir joguines</td>
+                        <td>"Tenim un problema. Les joguines necessiten tornar a casa seva i tu vols seguir jugant. Com ho solucionem?"</td>
+                        <td>Recollir per torns, música mentre recull, convertir-ho en joc</td>
+                    </tr>
+                    <tr>
+                        <td>Protesta per dormir</td>
+                        <td>"Veig que no tens ganes de dormir i jo sé que necessites descansar per créixer fort. Què se't acut?"</td>
+                        <td>Un conte més, llum tènue, acompanyar 5 minuts</td>
+                    </tr>
+                    <tr>
+                        <td>No vol posar l'abric</td>
+                        <td>"Fa fred i necessites estar calent. Què podem fer perquè et sigui més fàcil?"</td>
+                        <td>Triar entre dos abrics, portar-lo a la mà primer, joc de rapidesa</td>
+                    </tr>
+                    <tr>
+                        <td>Resistència al bany</td>
+                        <td>"El teu cos necessita estar net i tu prefereixes jugar. Com ho arreglem?"</td>
+                        <td>Joguines al bany, bany curt, música, temps determinat</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>🤝 Beneficis de l'Enfocament Col·laboratiu</h2>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">🧠</div>
+                    <h3>Desenvolupament de Capacitats</h3>
+                    <ul>
+                        <li>Pensament crític i creativitat</li>
+                        <li>Habilitats de resolució de problemes</li>
+                        <li>Responsabilitat personal</li>
+                        <li>Autoconeixement de les pròpies necessitats</li>
+                        <li>Capacitat de negociació sana</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">❤️</div>
+                    <h3>Millora de la Relació</h3>
+                    <ul>
+                        <li>Passa de lluita de poder a cooperació</li>
+                        <li>Crea sentiment de treball en equip</li>
+                        <li>Redueix resistència i discussions</li>
+                        <li>Fomenta respecte mutu</li>
+                        <li>Genera aprenentatge compartit</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>🚀 Claus per a una Implementació Exitosa</h3>
+                <ul style="margin: 15px 0; padding-left: 25px;">
+                    <li><strong>Sigues pacient:</strong> Aquest canvi requereix temps i pràctica</li>
+                    <li><strong>Implementació gradual:</strong> Comença per aplicar una estratègia cada setmana</li>
+                    <li><strong>Consistència:</strong> És més important que la perfecció</li>
+                    <li><strong>Autocompassió:</strong> Perdona't els errors i celebra els petits èxits</li>
+                    <li><strong>Recordatori:</strong> Els canvis requereixen temps tant per a tu com per als teus fills</li>
+                </ul>
+                <p style="margin-top: 20px; font-weight: 600; text-align: center; color: #e84393;">
+                    Recorda: Dos passos endavant, un endarrere, però sempre avançant cap a una vida familiar més harmoniosa i connectada.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const sections = document.querySelectorAll('.section');
+            const progressBar = document.getElementById('progressBar');
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menuToggle');
+
+            // Navegació smooth scroll
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    
+                    // Actualitzar classe activa
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Scroll suau amb offset per evitar solapament
+                    const offsetTop = targetSection.offsetTop - 20;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Tancar menú mòbil
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            });
+
+            // Barra de progrés i navegació activa
+            window.addEventListener('scroll', function() {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                progressBar.style.width = scrolled + '%';
+
+                // Detectar secció actual
+                let currentSection = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 100;
+                    const sectionBottom = sectionTop + section.clientHeight;
+                    if (window.pageYOffset >= sectionTop && window.pageYOffset < sectionBottom) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
+
+                // Actualitzar navegació activa
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('href') === '#' + currentSection) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+
+            // Gestió menú mòbil
+            function checkScreenSize() {
+                if (window.innerWidth <= 768) {
+                    menuToggle.style.display = 'block';
+                } else {
+                    menuToggle.style.display = 'none';
+                    sidebar.classList.remove('active');
+                }
+            }
+
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('active');
+                });
+            }
+
+            // Tancar menú en clic fora
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth <= 768 && !sidebar.contains(e.target) && e.target !== menuToggle) {
+                    sidebar.classList.remove('active');
+                }
+            });
+
+            checkScreenSize();
+            window.addEventListener('resize', checkScreenSize);
+        });
+    </script>
+</body>
+</html>

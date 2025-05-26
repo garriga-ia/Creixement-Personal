@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autocura i Gestió Emocional - Guia Completa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2d3436;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #6c5ce7 100%);
+        }
+
+        /* Barra de progrés */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(to right, #55a3ff, #00cec9);
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            box-shadow: 2px 0 25px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+            overflow-y: auto;
+            padding: 20px 0;
+            border-right: 3px solid #74b9ff;
+        }
+
+        .sidebar h2 {
+            padding: 0 20px 20px;
+            color: #0984e3;
+            border-bottom: 2px solid #f1f2f6;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #636e72;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: linear-gradient(90deg, rgba(116, 185, 255, 0.1), rgba(9, 132, 227, 0.05));
+            color: #0984e3;
+            border-left-color: #74b9ff;
+            transform: translateX(8px);
+        }
+
+        /* Contingut principal */
+        .main-content {
+            margin-left: 280px;
+            padding: 20px 40px;
+            min-height: 100vh;
+        }
+
+        /* Seccions */
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            padding: 50px 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(116, 185, 255, 0.05));
+            padding: 80px 40px;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section h1 {
+            font-size: 2.8rem;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, #0984e3, #74b9ff, #6c5ce7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            margin: 35px 0 20px 0;
+            color: #0984e3;
+            font-weight: 700;
+            border-left: 5px solid #74b9ff;
+            padding-left: 20px;
+        }
+
+        .section h3 {
+            font-size: 1.4rem;
+            margin: 25px 0 15px 0;
+            color: #6c5ce7;
+            font-weight: 600;
+        }
+
+        .section p, .section li {
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+            color: #2d3436;
+            line-height: 1.7;
+        }
+
+        .section ul {
+            margin: 15px 0 25px 25px;
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid #00b894;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h3 {
+            color: #00b894;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+            display: block;
+        }
+
+        /* Tipus de cards */
+        .step-card {
+            border-left-color: #fd79a8;
+        }
+
+        .step-card h3 {
+            color: #fd79a8;
+        }
+
+        .strategy-card {
+            border-left-color: #00cec9;
+        }
+
+        .strategy-card h3 {
+            color: #00cec9;
+        }
+
+        .emotion-card {
+            border-left-color: #e84393;
+        }
+
+        .emotion-card h3 {
+            color: #e84393;
+        }
+
+        .wellness-card {
+            border-left-color: #6c5ce7;
+        }
+
+        .wellness-card h3 {
+            color: #6c5ce7;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(120deg, rgba(116, 185, 255, 0.15), rgba(108, 92, 231, 0.15));
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 5px solid #74b9ff;
+            border: 1px solid rgba(116, 185, 255, 0.2);
+        }
+
+        .quote {
+            font-style: italic;
+            font-size: 1.2rem;
+            text-align: center;
+            color: #636e72;
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(120deg, rgba(116, 185, 255, 0.1), rgba(108, 92, 231, 0.1));
+            border-radius: 15px;
+            border-left: 4px solid #74b9ff;
+            font-weight: 500;
+        }
+
+        /* Taules */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, #0984e3, #74b9ff);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background-color: rgba(116, 185, 255, 0.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .section {
+                padding: 30px 20px;
+                margin-bottom: 25px;
+            }
+
+            .hero-section {
+                padding: 50px 20px;
+            }
+
+            .section h1 {
+                font-size: 2.2rem;
+            }
+
+            .section h2 {
+                font-size: 1.6rem;
+            }
+
+            .menu-toggle {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1001;
+                background: #0984e3;
+                color: white;
+                border: none;
+                padding: 12px;
+                border-radius: 10px;
+                cursor: pointer;
+                font-size: 1.2rem;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll suau */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animacions */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de progrés -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Botó menú mòbil -->
+    <button class="menu-toggle" id="menuToggle" style="display: none;">☰</button>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <h2>📚 Contingut</h2>
+        <a href="#intro" class="nav-item active">🌳 Introducció</a>
+        <a href="#five-steps" class="nav-item">🎯 5 Passos Fonamentals</a>
+        <a href="#tigresa" class="nav-item">🐅 Gestió de la "Tigresa"</a>
+        <a href="#triggers" class="nav-item">⚡ Identificar Desencadenants</a>
+        <a href="#prevention" class="nav-item">🛡️ Estratègies de Prevenció</a>
+        <a href="#emergency" class="nav-item">🚨 Tècniques d'Emergència</a>
+        <a href="#guilt" class="nav-item">💔 Gestió de la Culpa</a>
+        <a href="#frustration" class="nav-item">😤 Frustració i Hartazgo</a>
+        <a href="#connection" class="nav-item">🧘 Connexió Personal</a>
+        <a href="#final" class="nav-item">💝 Missatge Final</a>
+    </nav>
+
+    <!-- Contingut principal -->
+    <main class="main-content">
+        
+        <!-- SECCIÓ 1: INTRODUCCIÓ -->
+        <section id="intro" class="section hero-section">
+            <h1>🌳 Autocura i Gestió Emocional</h1>
+            
+            <div class="quote">
+                "Tu ets l'arbre que sosté tot (família, feina, responsabilitats). Si no et cuides, l'arbre es trenca i tot es ve avall."
+            </div>
+            
+            <div class="highlight">
+                <h3>💡 Concepte Fonamental</h3>
+                <p>Aquest sufriment no és només teu, ho pateixen també els teus éssers estimats. La bona notícia és que, normalment, les coses poden canviar.</p>
+            </div>
+
+            <h2>🌊 Consequències de no Cuidar-se</h2>
+            <div class="cards-grid">
+                <div class="card wellness-card">
+                    <div class="card-icon">😰</div>
+                    <h3>Efectes Personals</h3>
+                    <ul>
+                        <li>Pèrdua de control i mal humor</li>
+                        <li>Menys paciència amb la família</li>
+                        <li>Incapacitat per gaudir de la vida</li>
+                        <li>Sensació d'esgotament constant</li>
+                    </ul>
+                </div>
+                
+                <div class="card wellness-card">
+                    <div class="card-icon">👨‍👩‍👧‍👦</div>
+                    <h3>Efectes Familiars</h3>
+                    <ul>
+                        <li>Més conflictes i discussions</li>
+                        <li>Menys connexió familiar</li>
+                        <li>Efecte dominó que afecta tothom</li>
+                        <li>Ambient tens i estressat</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 2: 5 PASSOS FONAMENTALS -->
+        <section id="five-steps" class="section">
+            <h1>🎯 Els 5 Passos d'Implementació</h1>
+            
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">Per passar del reconeixement a l'acció, segueix aquests 5 passos estructurats que et permetran implementar canvis reals en la teva vida.</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pas</th>
+                        <th>Objectiu</th>
+                        <th>Benefici Principal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1. Pedir Ajuda</td>
+                        <td>Delegar responsabilitats</td>
+                        <td>Alliberar temps i energia</td>
+                    </tr>
+                    <tr>
+                        <td>2. Rebaixar Exigències</td>
+                        <td>Acceptar imperfecció tolerable</td>
+                        <td>Reduir estrès i pressió</td>
+                    </tr>
+                    <tr>
+                        <td>3. Fer Coses que t'Agradin</td>
+                        <td>Planificar temps personal</td>
+                        <td>Recarregar energia i motivació</td>
+                    </tr>
+                    <tr>
+                        <td>4. Canviar Prioritats</td>
+                        <td>Del FER al SER i ESTAR</td>
+                        <td>Millor connexió i benestar</td>
+                    </tr>
+                    <tr>
+                        <td>5. Establir Prioritat</td>
+                        <td>Fer-ho inamovible</td>
+                        <td>Canvi sostenible a llarg termini</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>🤝 Pas 1: Pedir Ajuda i Delegar</h2>
+            <div class="cards-grid">
+                <div class="card step-card">
+                    <div class="card-icon">👨‍👩‍👧‍👦</div>
+                    <h3>A qui Demanar Ajuda</h3>
+                    <ul>
+                        <li><strong>Parella:</strong> distribuir responsabilitats domèstiques</li>
+                        <li><strong>Pares:</strong> suport amb els nens o tasques</li>
+                        <li><strong>Fills:</strong> responsabilitats adaptades a cada edat</li>
+                        <li><strong>Professionals:</strong> neteja, cangur, etc.</li>
+                        <li><strong>Altres pares:</strong> transport compartit, intercanvi</li>
+                    </ul>
+                </div>
+                
+                <div class="card step-card">
+                    <div class="card-icon">💬</div>
+                    <h3>Com Comunicar-ho</h3>
+                    <p><strong>❌ Evita:</strong></p>
+                    <ul>
+                        <li>Victimització: "No puc més, estic esgotada"</li>
+                        <li>Confrontació: "Tu no fas res mai"</li>
+                        <li>Queixa: "Sempre he de fer-ho tot jo"</li>
+                    </ul>
+                    <p><strong>✅ Millor:</strong> "Cariño, t'importaria ocupar-te de la cena dos cops per setmana? Així puc tenir un rato per mi"</p>
+                </div>
+            </div>
+
+            <h2>📉 Pas 2: Rebaixar les Exigències</h2>
+            <div class="highlight">
+                <h3>🎯 Concepte Clau: Perdona't la Vida</h3>
+                <p>Viu amb menys autoexigència en l'àmbit material. No es tracta de viure en el caos, sinó de trobar un punt intermig entre perfeccionisme i funcionalitat.</p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Abans (Perfeccionisme)</th>
+                        <th>Després (Equilibri)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Casa perfecta</td>
+                        <td>Casa funcional i còmoda</td>
+                    </tr>
+                    <tr>
+                        <td>Menjar gourmet cada dia</td>
+                        <td>Alimentació saludable i variada</td>
+                    </tr>
+                    <tr>
+                        <td>Agenda plena d'activitats</td>
+                        <td>Temps per respirar i connectar</td>
+                    </tr>
+                    <tr>
+                        <td>Tot planxat i impecable</td>
+                        <td>Roba neta i presentable</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>😊 Pas 3: Fer Coses que t'Agraden</h2>
+            <div class="cards-grid">
+                <div class="card step-card">
+                    <div class="card-icon">🏃‍♀️</div>
+                    <h3>Exercici Físic</h3>
+                    <ul>
+                        <li>Gimnàs, ioga, córrer</li>
+                        <li>Natació, pilates</li>
+                        <li>Caminar, bicicleta</li>
+                    </ul>
+                </div>
+                
+                <div class="card step-card">
+                    <div class="card-icon">👥</div>
+                    <h3>Activitats Socials</h3>
+                    <ul>
+                        <li>Quedar amb amics</li>
+                        <li>Sopar en parella</li>
+                        <li>Grup de lectura</li>
+                    </ul>
+                </div>
+                
+                <div class="card step-card">
+                    <div class="card-icon">🎨</div>
+                    <h3>Hobbies Creatius</h3>
+                    <ul>
+                        <li>Pintura, escriptura</li>
+                        <li>Música, manualitats</li>
+                        <li>Fotografia</li>
+                    </ul>
+                </div>
+                
+                <div class="card step-card">
+                    <div class="card-icon">📚</div>
+                    <h3>Relaxació i Aprenentatge</h3>
+                    <ul>
+                        <li>Lectura, meditació</li>
+                        <li>Cursos online</li>
+                        <li>Bany tranquil</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>🔑 Clau de l'Èxit</h3>
+                <p>Ser responsable amb el compromís cap a tu mateixa. Tracta aquest temps com una cita important que no es pot cancel·lar. La disciplina és fonamental per crear l'hàbit.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 3: GESTIÓ DE LA TIGRESA -->
+        <section id="tigresa" class="section">
+            <h1>🐅 Gestió de la "Tigresa" Interior</h1>
+            
+            <div class="quote">
+                "És molt comú experimentar una emoció molt intensa que et porta a cridar, castigar i perdre l'empatia, sentint-te incapaç de connectar amb qui t'envolta."
+            </div>
+
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">Aquesta sensació de ser una força incontenible, com un volcà, es descriu sovint com transformar-se en tigresa. És una experiència que molts voldrien evitar.</p>
+
+            <div class="cards-grid">
+                <div class="card emotion-card">
+                    <div class="card-icon">😤</div>
+                    <h3>Què és la "Tigresa"</h3>
+                    <ul>
+                        <li>Emoció intensa que porta a cridar</li>
+                        <li>Pèrdua d'empatía i connexió</li>
+                        <li>Sensació de ser una fuerza incontenible</li>
+                        <li>Arrepentiment posterior</li>
+                        <li>Tristesa al veure por als fills</li>
+                    </ul>
+                </div>
+                
+                <div class="card emotion-card">
+                    <div class="card-icon">🔍</div>
+                    <h3>Conseqüències</h3>
+                    <ul>
+                        <li>Sentiment d'aïllament</li>
+                        <li>Pèrdua de recursos interns</li>
+                        <li>Dany en les relacions familiars</li>
+                        <li>Culpa i autorecriminació</li>
+                        <li>Cicle destructiu d'emocions</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>🌟 Bona Notícia</h3>
+                <p>És possible trobar maneres de manejar aquests moments crítics per mantenir la serenitat i el control, actuant com l'adult responsable de la situació.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 4: IDENTIFICAR DESENCADENANTS -->
+        <section id="triggers" class="section">
+            <h1>⚡ Identificar els Desencadenants</h1>
+            
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">Per gestionar els moments de pèrdua de control, primer és fonamental identificar quan ocorren aquests episodis.</p>
+
+            <div class="cards-grid">
+                <div class="card strategy-card">
+                    <div class="card-icon">😴</div>
+                    <h3>Factors Físics</h3>
+                    <ul>
+                        <li>Falta de son o cansament extrem</li>
+                        <li>Fam o baixada de sucre</li>
+                        <li>Estrès físic acumulat</li>
+                        <li>Malestar o dolor</li>
+                        <li>Canvis hormonals</li>
+                    </ul>
+                </div>
+                
+                <div class="card strategy-card">
+                    <div class="card-icon">⏰</div>
+                    <h3>Moments Crítics del Dia</h3>
+                    <ul>
+                        <li>Sortir corrents de la feina sense transició</li>
+                        <li>Arribada a casa amb demandes immediates</li>
+                        <li>Hora de fer deures amb resistència</li>
+                        <li>Moment d'anar a dormir quan tots estan cansats</li>
+                        <li>Matins dels dilluns estressants</li>
+                    </ul>
+                </div>
+                
+                <div class="card strategy-card">
+                    <div class="card-icon">👨‍👩‍👧‍👦</div>
+                    <h3>Situacions Familiars</h3>
+                    <ul>
+                        <li>Baralles entre germans</li>
+                        <li>Crítica o judici de familiars</li>
+                        <li>Parella absent i sentir que tot recau en tu</li>
+                        <li>Desordre acumulat a casa</li>
+                        <li>Múltiples demandes simultànies</li>
+                    </ul>
+                </div>
+                
+                <div class="card strategy-card">
+                    <div class="card-icon">💼</div>
+                    <h3>Estrès External</h3>
+                    <ul>
+                        <li>Feina pendent de l'oficina</li>
+                        <li>Problemes econòmics</li>
+                        <li>Tensió amb altres pares o escola</li>
+                        <li>Agenda massa carregada</li>
+                        <li>Expectatives irrealistes</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>🔍 Autoobservació Honest</h3>
+                <p>És vital observar-se amb honestedat per identificar els moments difícils i pensar en com fer-los més fàcils. Això implica conèixer-se a una mateixa, no només per veure la dificultat sinó per trobar la solució.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 5: ESTRATÈGIES DE PREVENCIÓ -->
+        <section id="prevention" class="section">
+            <h1>🛡️ Estratègies de Prevenció</h1>
+            
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">Un cop identificats els desencadenants, el següent pas és buscar alternatives i solucions específiques per cada situació.</p>
+
+            <h2>💤 Si la Falta de Son és el Problema</h2>
+            <div class="cards-grid">
+                <div class="card wellness-card">
+                    <div class="card-icon">🛌</div>
+                    <h3>Solucions de Son</h3>
+                    <ul>
+                        <li>Anar a dormir 30 minuts abans</li>
+                        <li>Llevar-se més tard si és possible</li>
+                        <li>Siesta curta de 15-20 minuts</li>
+                        <li>Delegar tasques nocturnes a la parella</li>
+                        <li>Rutina de son més estricta</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🏃‍♀️ Si la Transició Feina-Casa és Difícil</h2>
+            <div class="cards-grid">
+                <div class="card wellness-card">
+                    <div class="card-icon">🚶‍♀️</div>
+                    <h3>Estratègies de Transició</h3>
+                    <ul>
+                        <li>Respirar uns minuts abans d'entrar a casa</li>
+                        <li>Sortir de la feina una mica abans per caminar</li>
+                        <li>Demanar ajuda per recollir els nens</li>
+                        <li>Canviar el camí de tornada a casa</li>
+                        <li>Dutxa immediata en arribar</li>
+                        <li>5 minuts d'aïllament per canviar el xip</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>👫 Si les Baralles entre Germans són un Problema</h2>
+            <div class="highlight">
+                <h3>🎯 Enfocament</h3>
+                <p>Aprendre estratègies específiques per reduir conflictes i millorar l'ambient a casa. Establir normes clares i consecuències consistents.</p>
+            </div>
+
+            <h2>📚 Si els Deures són una Batalla</h2>
+            <div class="cards-grid">
+                <div class="card strategy-card">
+                    <div class="card-icon">📝</div>
+                    <h3>Estratègies per Deures</h3>
+                    <ul>
+                        <li>Pactar una estratègia clara amb el fill</li>
+                        <li>Signar un "contracte" de deures</li>
+                        <li>Establir horaris fixos</li>
+                        <li>Espai d'estudi lliure de distraccions</li>
+                        <li>Responsabilitats i conseqüències clares</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🌙 Si l'Hora de Dormir és un Conflicte</h2>
+            <div class="cards-grid">
+                <div class="card wellness-card">
+                    <div class="card-icon">😴</div>
+                    <h3>Simplificar la Rutina</h3>
+                    <ul>
+                        <li>Observar i modificar les rutines actuals</li>
+                        <li>Llegir un sol conte curt</li>
+                        <li>Activitats més tranquïl·les abans de dormir</li>
+                        <li>Horari fix i consistent</li>
+                        <li>Ambient relaxant (llum tènue, temperatura adequada)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>👨‍👩‍👧‍👦 Quan la Parella No Està Present</h2>
+            <div class="cards-grid">
+                <div class="card step-card">
+                    <div class="card-icon">🍽️</div>
+                    <h3>Simplificar Tasques</h3>
+                    <ul>
+                        <li>Cenes senzilles i ràpides</li>
+                        <li>Roba que no necessiti planxa</li>
+                        <li>Edredons fàcils de estendre</li>
+                        <li>Menús setmanals planificats</li>
+                        <li>Reduir expectatives de perfecció</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>💼 Si l'Estrès ve de la Feina Pendent</h2>
+            <div class="highlight">
+                <h3>🔌 Aprendre a Desconnectar</h3>
+                <ul style="margin: 15px 0; padding-left: 25px;">
+                    <li>Dutxa immediata per canviar el xip</li>
+                    <li>Passeig abans d'arribar a casa</li>
+                    <li>Exercicis de respiració</li>
+                    <li>Anar al parc amb els nens en lloc d'anar directe a casa</li>
+                    <li>Apagar el telèfon de la feina</li>
+                    <li>Establir horaris límit per la feina</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 6: TÈCNIQUES D'EMERGÈNCIA -->
+        <section id="emergency" class="section">
+            <h1>🚨 Tècniques d'Emergència</h1>
+            
+            <div class="quote">
+                "A pesar d'aplicar estratègies de prevenció, pot haver-hi moments en els que, tot i així, et transformis en tigresa i perdis el control."
+            </div>
+
+            <h2>🛑 Pas 1: Visualitzar la Línia Roja</h2>
+            <div class="cards-grid">
+                <div class="card emotion-card">
+                    <div class="card-icon">⚠️</div>
+                    <h3>Identificar el Límit</h3>
+                    <p>Visualitza una línia roja, un límit que et compromets a no creuar. Estigues atenta a acostar-te a ella.</p>
+                    <p><strong>Si ja l'has creuat:</strong> Si ja estàs dient o fent alguna cosa de la qual t'arrepentiràs, l'acció immediata és <strong>CALLAR-SE</strong>.</p>
+                </div>
+                
+                <div class="card emotion-card">
+                    <div class="card-icon">🛑</div>
+                    <h3>Interrompre Immediatament</h3>
+                    <p>Deténs el que estàs dient en aquest mateix instant. Callar-se és un bon exemple per als fills i mostra que reconeix l'error i no vols seguir per un camí destructiu.</p>
+                </div>
+            </div>
+
+            <h2>🫁 Pas 2: Respirar Profundament</h2>
+            <div class="highlight">
+                <h3>💨 Tècnica de Respiració</h3>
+                <p>Respira profundament, <strong>almenys quatre vegades</strong>, inhalant i exhalant lentament. Això ajuda a reduir els nivells d'estrès i permet que la part racional reprengui el control sobre la reacció instintiva.</p>
+            </div>
+
+            <h2>💧 Pas 3: Contacte amb Aigua</h2>
+            <div class="cards-grid">
+                <div class="card strategy-card">
+                    <div class="card-icon">🚿</div>
+                    <h3>Tècnica Física</h3>
+                    <p>Mulla't la cara i els canells. El contacte amb l'aigua i el fred també ajuda a calmar la reacció automàtica i reduir la intensitat emocional.</p>
+                </div>
+            </div>
+
+            <h2>💬 Pas 4: Expressar Sense Agredir</h2>
+            <div class="cards-grid">
+                <div class="card emotion-card">
+                    <div class="card-icon">🗣️</div>
+                    <h3>Comunicació Constructiva</h3>
+                    <p><strong>Exemples d'expressions adequades:</strong></p>
+                    <ul>
+                        <li>"Necessito estar sola un rato"</li>
+                        <li>"Estic tan enfadada que ara mateix no puc parlar"</li>
+                        <li>"El que has fet m'ha disgustoat muchísimo, ho parlarem quan estem més tranquils"</li>
+                        <li>"Necessito un moment per calmar-me"</li>
+                    </ul>
+                    <p>Això ensenya als fills a gestionar situacions difícils de manera constructiva.</p>
+                </div>
+            </div>
+
+            <h2>❤️ Pas 5: Recordar que No és un Enemic</h2>
+            <div class="highlight">
+                <h3>👨‍👩‍👧‍👦 Canvi de Perspectiva</h3>
+                <p>En mig del conflicte, és crucial recordar que la persona que tens davant, especialment els fills, <strong>no és un enemic</strong>. Sovint, en perdre el control, s'oblida l'amor que se sent per ells.</p>
+                <ul style="margin: 15px 0; padding-left: 25px;">
+                    <li>En lloc d'intentar "guanyar" o tenir la raó</li>
+                    <li>L'objectiu ha de ser resoldre la situació</li>
+                    <li>Reconnectar amb l'altra persona</li>
+                    <li>Buscar solucions junts des de l'amor</li>
+                    <li>Elegir l'amor conscientemente en moments difícils</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 7: GESTIÓ DE LA CULPA -->
+        <section id="guilt" class="section">
+            <h1>💔 Transformar la Culpa en Responsabilitat</h1>
+            
+            <div class="quote">
+                "La culpa sembla ser intrínseca a la maternitat, com una 'pepita grillo' constant que senyala el que no s'està fent bé."
+            </div>
+
+            <h2>😔 Fonts Comunes de Culpa</h2>
+            <div class="cards-grid">
+                <div class="card emotion-card">
+                    <div class="card-icon">🎮</div>
+                    <h3>Temps i Atenció</h3>
+                    <ul>
+                        <li>No jugar suficient o jugar massa</li>
+                        <li>Temps que passes amb els fills</li>
+                        <li>No dedicar el mateix temps a cada fill</li>
+                        <li>Gaudir del treball fora de casa</li>
+                    </ul>
+                </div>
+                
+                <div class="card emotion-card">
+                    <div class="card-icon">😤</div>
+                    <h3>Control i Paciència</h3>
+                    <ul>
+                        <li>Perdre el control i cridar</li>
+                        <li>No ser pacient</li>
+                        <li>No ensenyar-los més coses</li>
+                        <li>Reaccionar malament en situacions difícils</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🔄 De la Culpa a la Responsabilitat</h2>
+            <div class="highlight">
+                <h3>🎯 Procés de Transformació</h3>
+                <p>La culpa és paral·litzant i et fa sentir impotent. La responsabilitat et permet actuar i fer canvis. En lloc de dir <em>"ho he fet fatal i no hi ha res a fer"</em>, escolta la culpa com una senyal i pregunta't: <strong>"Què puc fer per millorar-ho?"</strong></p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Situació de Culpa</th>
+                        <th>Resposta Responsable</th>
+                        <th>Acció Concreta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Dar menjar poc saludable per arribada tardana</td>
+                        <td>Acceptar la situació actual i buscar alternatives</td>
+                        <td>Cuinar i congelar menjar sa, planificar opcions ràpides</td>
+                    </tr>
+                    <tr>
+                        <td>Sentir-se feliç deixant fills amb abuelos</td>
+                        <td>Reconèixer que tots estan bé i ningú sofreix</td>
+                        <td>Gaudir del temps personal sense culpa</td>
+                    </tr>
+                    <tr>
+                        <td>Cridar als fills en moments de tensió</td>
+                        <td>Assumir la decisió de deixar de cridar</td>
+                        <td>Buscar altres maneres de resoldre problemes</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="cards-grid">
+                <div class="card wellness-card">
+                    <div class="card-icon">🎯</div>
+                    <h3>Beneficis de la Responsabilitat</h3>
+                    <ul>
+                        <li>Recuperar el control i capacitat d'acció</li>
+                        <li>Veure que és possible fer modificacions</li>
+                        <li>Sentir-se capaç de millorar</li>
+                        <li>Transformar paralisia en moviment</li>
+                        <li>Crear canvis positius reals</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 8: FRUSTRACIÓ I HARTAZGO -->
+        <section id="frustration" class="section">
+            <h1>😤 Gestionar la Frustració i el Hartazgo</h1>
+            
+            <div class="quote">
+                "La maternitat, encara que a vegades tendra i bonica, pot resultar aclaparadora, frustrant i menys gratificant del que s'imaginava."
+            </div>
+
+            <h2>😔 Realitats de la Maternitat</h2>
+            <div class="cards-grid">
+                <div class="card emotion-card">
+                    <div class="card-icon">🔒</div>
+                    <h3>Sentiments Comuns</h3>
+                    <ul>
+                        <li>Sentir-se presoner de les rutines</li>
+                        <li>Enyorar la vida anterior</li>
+                        <li>Frustració amb la repetitivitat</li>
+                        <li>Sensació que "és un rotllo a vegades"</li>
+                        <li>Menys gratificant del que esperaves</li>
+                    </ul>
+                </div>
+                
+                <div class="card emotion-card">
+                    <div class="card-icon">✅</div>
+                    <h3>Acceptació Important</h3>
+                    <p>És fonamental no sentir-se mal ni jutjar-se per sentir això. És una experiència molt habitual i <strong>completament normal</strong>.</p>
+                    <p>Acceptar que ser mare "és un rotllo a vegades" és un primer pas saludable.</p>
+                </div>
+            </div>
+
+            <h2>🛠️ Estratègies per Gestionar el Hartazgo</h2>
+            <div class="cards-grid">
+                <div class="card strategy-card">
+                    <div class="card-icon">🗣️</div>
+                    <h3>Buscar Suport</h3>
+                    <ul>
+                        <li>Trobar algú que escolti sense jutjar</li>
+                        <li>Només acompanyar, no necessàriament resoldre</li>
+                        <li>Evitar guardar la frustració (genera ressentiment)</li>
+                        <li>Grups de mares que entenguin la situació</li>
+                    </ul>
+                </div>
+                
+                <div class="card strategy-card">
+                    <div class="card-icon">🔍</div>
+                    <h3>Analitzar i Comprendre</h3>
+                    <ul>
+                        <li>Ser honesta sobre quin tipus de vida desitges</li>
+                        <li>Identificar modificacions possibles</li>
+                        <li>Dins de les circumstàncies actuals</li>
+                        <li>Per fer el dia a dia més suportable</li>
+                    </ul>
+                </div>
+                
+                <div class="card strategy-card">
+                    <div class="card-icon">📋</div>
+                    <h3>Crear un Pla</h3>
+                    <ul>
+                        <li>Introduir canvis graduals</li>
+                        <li>Aunque no siguin la fantasia perfecta</li>
+                        <li>Qualsevol milloria és valuosa</li>
+                        <li>Planificar per al futur sense fills</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>🎯 Accions Específiques</h2>
+            <div class="cards-grid">
+                <div class="card wellness-card">
+                    <div class="card-icon">🤝</div>
+                    <h3>Delegar i Demanar Ajuda</h3>
+                    <ul>
+                        <li>No convertir-se en "sirvienta" dels fills</li>
+                        <li>Donar responsabilitats adaptades a l'edat</li>
+                        <li>No fer per ells el que ja poden fer sols</li>
+                        <li>Acceptar la frustració dels fills (és educatiu)</li>
+                    </ul>
+                </div>
+                
+                <div class="card wellness-card">
+                    <div class="card-icon">🌿</div>
+                    <h3>Sortir de la Vida Domèstica</h3>
+                    <ul>
+                        <li>Temps a la natura (parc, platja)</li>
+                        <li>Veure amics cara a cara</li>
+                        <li>Activitats de lleure que gaudeixes</li>
+                        <li>Recuperar contacte amb el món exterior</li>
+                    </ul>
+                </div>
+                
+                <div class="card wellness-card">
+                    <div class="card-icon">👨‍👩‍👧‍👦</div>
+                    <h3>Integrar el Propi Benestar</h3>
+                    <ul>
+                        <li>Fer activitats que gaudeixes mentre estàs amb ells</li>
+                        <li>Si no t'agrada jugar, no juguis</li>
+                        <li>Incorpora cuinar, ballar, segons els teus gustos</li>
+                        <li>Buscar llocs que et facin sentir bé</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>💝 Recordatori Important</h3>
+                <p>Prioritizar-se i reconèixer que el propi benestar és important <strong>no és egoisme</strong>. Si l'adult està millor, més equilibrat i feliç, tota la família es beneficia.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 9: CONNEXIÓ PERSONAL -->
+        <section id="connection" class="section">
+            <h1>🧘 Connexió amb Tu Mateixa</h1>
+            
+            <div class="quote">
+                "En l'enrenou diari és fàcil perdre's, oblidar qui ets, què vols i quin és el teu camí."
+            </div>
+
+            <h2>🤔 Per què És Vital Connectar amb Tu Mateixa</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">Només si et dones espai i temps per saber qui ets, podràs prendre decisions adequades per a la teva vida i benestar.</p>
+
+            <h2>🔇 Moments de Silenci</h2>
+            <div class="cards-grid">
+                <div class="card wellness-card">
+                    <div class="card-icon">☕</div>
+                    <h3>Micro-moments de Pau</h3>
+                    <ul>
+                        <li>3-5 minuts per simplement estar</li>
+                        <li>Cafè tranquil al matí</li>
+                        <li>Seure al sofà sense fer res</li>
+                        <li>Mirar per la finestra</li>
+                    </ul>
+                </div>
+                
+                <div class="card wellness-card">
+                    <div class="card-icon">👀</div>
+                    <h3>Observació Conscient</h3>
+                    <ul>
+                        <li>Veure els fills jugar des de l'umbral</li>
+                        <li>Moments d'espera: bus, consulta mètge</li>
+                        <li>Porta del col·legi</li>
+                        <li>L'avorriment és beneficiós per la creativitat</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>📱 Desconnexió Tecnològica</h2>
+            <div class="cards-grid">
+                <div class="card strategy-card">
+                    <div class="card-icon">📵</div>
+                    <h3>Estratègies de Desconnexió</h3>
+                    <ul>
+                        <li>Deixar el mòbil en una caixa en arribar a casa</li>
+                        <li>No portar-lo al dormitori (comprar despertador)</li>
+                        <li>Dia sense tecnologia setmanal per a tota la família</li>
+                        <li>Trajectes curts sense mòbil</li>
+                        <li>Espais lliures de tecnologia (menjador, dormitori)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>📝 Buidar la Ment Apuntant</h2>
+            <div class="highlight">
+                <h3>🧠 Alliberar la Càrrega Mental</h3>
+                <p>La ment sovint està plena de tasques i recordatoris que t'impedeixen connectar amb tu mateixa. La solució és simple però transformadora: <strong>apunta-ho tot</strong>.</p>
+                <ul style="margin: 15px 0; padding-left: 25px;">
+                    <li>Usa un cuaderno, el mòbil o calendari al frigorífic</li>
+                    <li>Apunta cites, tasques, horaris, dades importants</li>
+                    <li>Allibera un peso enorme del cap</li>
+                    <li>Permet que la teva veu interior sigui escoltada</li>
+                </ul>
+            </div>
+
+            <h2>🎈 Gestió dels Pensaments</h2>
+            <div class="cards-grid">
+                <div class="card wellness-card">
+                    <div class="card-icon">🎈</div>
+                    <h3>Tècnica del Globus</h3>
+                    <p>Tendim a estar sempre en el futur: "demà he de...", "a les 3 he de...". El "globus" dels teus pensaments se'n va a altres moments.</p>
+                    <ul>
+                        <li>Porta el "globus" de tornada a l'aquí i ara</li>
+                        <li>Pots preocupar-te quan sigui el moment de resoldre</li>
+                        <li>No permetis que la planificació arruïni el present</li>
+                        <li>Practica estar plenament en el moment actual</li>
+                    </ul>
+                </div>
+                
+                <div class="card wellness-card">
+                    <div class="card-icon">⏳</div>
+                    <h3>Aprendre a Esperar</h3>
+                    <ul>
+                        <li>Veure moments d'espera com oportunitats</li>
+                        <li>Alternatives a mirar el mòbil</li>
+                        <li>Observar l'entorn, escoltar sons</li>
+                        <li>Acompanyar els fills en crisis decidint esperar</li>
+                        <li>Practicar la presencia sense jutjar</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>💪 Connexió amb el Cos i la Natura</h2>
+            <div class="cards-grid">
+                <div class="card wellness-card">
+                    <div class="card-icon">🌳</div>
+                    <h3>La Natura com Aliada</h3>
+                    <ul>
+                        <li>No cal un bosc imponent</li>
+                        <li>Parcs propers o zones verdes</li>
+                        <li>Triar rutes més verdes</li>
+                        <li>Tenir plantes a casa</li>
+                        <li>Activitats familiars en la natura</li>
+                    </ul>
+                </div>
+                
+                <div class="card wellness-card">
+                    <div class="card-icon">🏃‍♀️</div>
+                    <h3>Moure el Cos</h3>
+                    <ul>
+                        <li>Si no t'agrada el gimnàs: caminar més</li>
+                        <li>Aprofitar temps dels fills (piscina, patinatge)</li>
+                        <li>Exercici familiar: bici, patins, futbol</li>
+                        <li>Ballar a casa o sortir</li>
+                        <li>Activitats aquàtiques</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓ 10: MISSATGE FINAL -->
+        <section id="final" class="section">
+            <h1>💝 Missatge Final: Tu Importes</h1>
+            
+            <div class="quote" style="font-size: 1.4rem; color: #0984e3; font-weight: 600;">
+                "Pensa en tu. Rega't. Cuida't. Descansa. Tu importes. Si tu estàs bé, els altres també ho estaran."
+            </div>
+
+            <h2>🌱 Sobre els Canvis</h2>
+            <div class="cards-grid">
+                <div class="card step-card">
+                    <div class="card-icon">⏰</div>
+                    <h3>Paciència amb el Procés</h3>
+                    <ul>
+                        <li>Els canvis són difícils i impliquen els altres</li>
+                        <li>Necessitaran temps per acostumar-se</li>
+                        <li>El procés no és lineal</li>
+                        <li>Dos passos endavant, un endarrere</li>
+                        <li>Amb perseverança, avançaràs</li>
+                    </ul>
+                </div>
+                
+                <div class="card step-card">
+                    <div class="card-icon">💪</div>
+                    <h3>Compromís i Disciplina</h3>
+                    <ul>
+                        <li>Requereix disciplina amb tu mateixa</li>
+                        <li>Compromís constant</li>
+                        <li>Consistència més que perfecció</li>
+                        <li>Petit progressos diaris</li>
+                        <li>Autocompassió en els moments difícils</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <h3>💝 El Teu Regal a la Família</h3>
+                <p>Cuidar-te <strong>no és egoisme</strong>, és un regal que fas a tota la teva família. Una mare/parella que està bé és el millor regal que pots oferir. Tots ho agrairan perquè si tu estàs bé, ells també.</p>
+            </div>
+
+            <h2>🗓️ Implementació Gradual</h2>
+            <div class="cards-grid">
+                <div class="card wellness-card">
+                    <div class="card-icon">📅</div>
+                    <h3>Pla d'Acció</h3>
+                    <p><strong>Comença per un pas cada setmana.</strong> No intentis canviar-ho tot d'una vegada.</p>
+                    <ol style="margin: 15px 0; padding-left: 25px;">
+                        <li>Tria el concepte que més ressoni amb tu</li>
+                        <li>Treballa'l durant una setmana</li>
+                        <li>Després afegeix el següent</li>
+                        <li>La constància és més important que la perfecció</li>
+                    </ol>
+                </div>
+            </div>
+
+            <h2>🌟 Fer les Paus amb el Passat</h2>
+            <div class="cards-grid">
+                <div class="card emotion-card">
+                    <div class="card-icon">🔍</div>
+                    <h3>Reconèixer els Obstacles</h3>
+                    <p>Els obstacles que t'impedeixen cuidar-te sovint provenen del passat:</p>
+                    <ul>
+                        <li>Infàncies dures</li>
+                        <li>Falta d'afecte</li>
+                        <li>Experiències traumàtiques</li>
+                        <li>Models poc clars</li>
+                    </ul>
+                </div>
+                
+                <div class="card emotion-card">
+                    <div class="card-icon">🌱</div>
+                    <h3>Construir-te a Tu Mateixa</h3>
+                    <ul>
+                        <li>Reconeix el que va passar</li>
+                        <li>Accepta que ara estàs en un moment diferent</li>
+                        <li>No t'ancloris en el passat</li>
+                        <li>Pren les regnes de com vols ser ara</li>
+                        <li>Decideix conscientemente basant-te en el teu criteri</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="quote" style="background: linear-gradient(120deg, rgba(0, 184, 148, 0.1), rgba(0, 206, 201, 0.1)); border-left-color: #00b894;">
+                "Escolta la teva veu interior. La teva intuïció és com un semàfor que et guia. Requereix silenci i desconnexió per escoltar-la. Amplifica-la i fes-li cas."
+            </div>
+
+            <div class="highlight" style="background: linear-gradient(120deg, rgba(9, 132, 227, 0.15), rgba(116, 185, 255, 0.15)); border-left-color: #0984e3;">
+                <h3>🎵 Reflexió Final</h3>
+                <p style="font-size: 1.2rem; text-align: center; font-weight: 600; color: #0984e3;">
+                    Recorda: Dos passos endavant, un endarrere, però sempre avançant cap a una vida més equilibrada, connectada i feliç. Tu mereixes estar bé. ❤️
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const sections = document.querySelectorAll('.section');
+            const progressBar = document.getElementById('progressBar');
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menuToggle');
+
+            // Navegació smooth scroll
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    
+                    // Actualitzar classe activa
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Scroll suau amb offset per evitar solapament
+                    const offsetTop = targetSection.offsetTop - 20;

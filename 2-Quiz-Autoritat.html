@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Criança amb Autoritat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 50%, #a29bfe 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2d3436;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, #e84393, #fd79a8);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .quiz-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .quiz-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Barra de progrés */
+        .progress-container {
+            background: rgba(255, 255, 255, 0.2);
+            height: 8px;
+            margin-top: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #00b894, #00cec9);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Contingut del quiz */
+        .quiz-content {
+            padding: 40px;
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            color: #2d3436;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .answer-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #f1f2f6;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            color: #2d3436;
+            font-weight: 500;
+        }
+
+        .answer-btn:hover {
+            border-color: #fd79a8;
+            background: rgba(253, 121, 168, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .answer-btn.selected {
+            border-color: #e84393;
+            background: linear-gradient(135deg, rgba(232, 67, 147, 0.1), rgba(253, 121, 168, 0.1));
+        }
+
+        .answer-btn.correct {
+            border-color: #00b894;
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.1), rgba(0, 206, 201, 0.1));
+        }
+
+        .answer-btn.incorrect {
+            border-color: #e17055;
+            background: linear-gradient(135deg, rgba(225, 112, 85, 0.1), rgba(253, 203, 110, 0.1));
+        }
+
+        /* Explicació */
+        .explanation {
+            display: none;
+            background: linear-gradient(120deg, rgba(116, 185, 255, 0.15), rgba(162, 155, 254, 0.15));
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border-left: 5px solid #6c5ce7;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .explanation h4 {
+            color: #6c5ce7;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .explanation p {
+            line-height: 1.6;
+            color: #2d3436;
+        }
+
+        /* Botons de navegació */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #00cec9, #00b894);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn:disabled {
+            background: #ddd;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Resultats finals */
+        .results-container {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .results-container.show {
+            display: block;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .results-score {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #e84393, #fd79a8, #a29bfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+
+        .results-message {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            color: #2d3436;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #e84393, #fd79a8);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .quiz-container {
+                margin: 10px;
+            }
+
+            .quiz-header {
+                padding: 20px;
+            }
+
+            .quiz-header h1 {
+                font-size: 2rem;
+            }
+
+            .quiz-content {
+                padding: 20px;
+            }
+
+            .question {
+                font-size: 1.1rem;
+            }
+
+            .answer-btn {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1>🎯 Quiz: Criança amb Autoritat</h1>
+            <p>Posa a prova els teus coneixements sobre educació positiva</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text">
+                <span id="currentQuestion">1</span> de <span id="totalQuestions">15</span> preguntes
+            </div>
+        </div>
+
+        <div class="quiz-content">
+            <!-- Pregunta 1 -->
+            <div class="question-container active" data-question="1">
+                <div class="question">
+                    🏠 Quin és l'objectiu principal de la criança amb autoritat?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Que els nens obeeixin sempre sense qüestionar res
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Que els nens et segueixin de forma natural perquè ets una guia segura
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Fer que els nens siguin feliços sempre
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>L'objectiu és construir una autoritat natural basada en la confiança i connexió, com el flautista del conte. Els nens t'han de seguir perquè confien en la teva guia, no per por o obligació.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 2 -->
+            <div class="question-container" data-question="2">
+                <div class="question">
+                    ⚖️ Quina és la principal diferència entre els tres models de criança?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        El permisiu té connexió sense límits, l'autoritari té límits sense connexió, i el d'autoritat equilibra ambdós
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Tots són iguals, només canvia la intensitat
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        El millor és adaptar-se segons la situació sense un model fix
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: A</h4>
+                    <p>El pare permisiu connecta però no posa límits clars. L'autoritari imposa límits sense connexió emocional. El model d'autoritat equilibra tots dos aspectes: connexió + límits ferms.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 3 -->
+            <div class="question-container" data-question="3">
+                <div class="question">
+                    🎧 Quan has d'aplicar "escolta selectiva" amb els teus fills?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Sempre has d'escoltar tots els seus arguments
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Escolta per connectar, però no per argumentar en moments de límits clars
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Mai escoltis les seves opinions
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Escolta per conèixer-los i connectar, però quan han de fer alguna cosa necessària (dormir, higiene, etc.), no entris en debats. Si fan l'acció correcta tot i protestar, concentra't en això.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 4 -->
+            <div class="question-container" data-question="4">
+                <div class="question">
+                    😤 Per què la frustració és necessària pels nens?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        No ho és, sempre han d'estar feliços
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Els prepara per a la vida real i desenvolupa resiliència
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Només per castigar-los quan es porten malament
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>La frustració controlada els ensenya a esperar, a tolerar el "no", i a desenvolupar eines per afrontar dificultats. Un nen que no aprèn a gestionar frustració tindrà problemes d'adult.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 5 -->
+            <div class="question-container" data-question="5">
+                <div class="question">
+                    ⏰ Quina és la clau de les rutines efectives?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Canviar-les constantment segons com et sentis
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Ser rígid i no permetre cap flexibilitat
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Consistència diària que proporcioni seguretat i previsibilitat
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: C</h4>
+                    <p>"La millor disciplina és una bona rutina." La consistència genera seguretat. Els nens saben què esperar i quan, reduint conflictes i la necessitat de "provar" límits constantment.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 6 -->
+            <div class="question-container" data-question="6">
+                <div class="question">
+                    💬 Quina és la forma CORRECTA de comunicar-se?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        "Vols posar-te l'abric?"
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        "Fa fred, posa't l'abric"
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        "Si no et poses l'abric, et refredaràs"
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Evita preguntes sobre responsabilitats adults. La salut, seguretat i horaris els decideix l'adult. Comunica l'acció de forma clara i directa sense delegar decisions que no corresponen al nen.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 7 -->
+            <div class="question-container" data-question="7">
+                <div class="question">
+                    🎯 Com pots corregir sense atacar la persona del nen?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        "Sempre ho fas malament"
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        "Veig uns zapatos que busquen casa seva"
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        "Ets molt desordenat"
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Parla de l'acció o objecte, no de la persona. Això evita la sensació de crítica constant i fa que cooperin millor. Pots usar humor: "Els contes volen dormir a la prestatge".</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 8 -->
+            <div class="question-container" data-question="8">
+                <div class="question">
+                    🎮 Quin és un bon exemple de convertir tasques en jocs?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Rentar dents = escombrar catifes màgiques
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Amenaçar amb conseqüències si no ho fan
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Fer-ho tu per ells perquè és més ràpid
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: A</h4>
+                    <p>La gamificació fa que les tasques siguin divertides: recollir = missió de rescat, vestir-se = transformació en superheroï. Això redueix resistència i crea cooperació natural.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 9 -->
+            <div class="question-container" data-question="9">
+                <div class="question">
+                    🚫 Per què no has de mostrar els teus dubtes davant els nens?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Perquè han de pensar que ets perfecta
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Perquè necessiten un líder segur i les teves vacil·lacions els confonen
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Perquè perdràs la seva amistat
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Els nens necessiten saber que estàn en mans segures. Si dubtes constantment, deixes de ser una guia clara. Dubta internament, decideix, i després comunica amb fermesa.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 10 -->
+            <div class="question-container" data-question="10">
+                <div class="question">
+                    🎪 Quan són acceptables els capricis dels nens?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Sempre que insistiexin prou
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Només en dies especials: cumpleaños, Nadal, vacances
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Mai, en cap circumstància
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Desitjar coses és normal, però cedir sempre cria nens capriciosos. Reserva aquests moments per ocasions especials. La resposta ferma és: "Ja saps que això és per al teu cumpleaños".</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 11 -->
+            <div class="question-container" data-question="11">
+                <div class="question">
+                    👶 Quina és l'actitud correcta quan els nens fan coses pròpies de la seva edat?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Castigar-los perquè aprenguin
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Comprendre que és normal: trencar, desordenar, manchar-se
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Ignorar-ho completament
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Els nens trenquen, griten, es mouen molt perqu és la seva naturalesa. Només corregeix desobediència intencionada. Adjust les expectatives a la seva edat evolutiva.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 12 -->
+            <div class="question-container" data-question="12">
+                <div class="question">
+                    📝 Quina estratègia funciona millor amb nens de 8+ anys?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Més control i vigilància constant
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Comunicació escrita: notes, recordatoris, contractes
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Tractar-los exactament igual que als petits
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Els més grans responen bé a notes, alarmes personalitzades, contractes escrits. Això els dona autonomia i redueix el teu paper de recordatori constant.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 13 -->
+            <div class="question-container" data-question="13">
+                <div class="question">
+                    🔧 Quin és el millor enfocament per resoldre problemes?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        "Si no et rentes les dents, no hi ha conte"
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        "Tenim un problema. Què podem fer per solucionar-ho?"
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Imposar la solució sense explicacions
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>L'enfocament col·laboratiu passa de la lluita de poder a la cooperació. Els nens aprenen a resoldre problemes i se senten part de la solució, no víctimes de conseqüències.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 14 -->
+            <div class="question-container" data-question="14">
+                <div class="question">
+                    👑 Quins models de lideratge pots seguir com a pare/mare amb autoritat?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Capitana de vaixell, pilot d'avió, directora d'orquestra
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Dictador, controlador total
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Amic incondicional sense autoritat
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: A</h4>
+                    <p>Aquests models tenen autoritat natural basada en coneixement, experiència i seguretat. Guien amb confiança i són seguits per la seva competència, no per imposició.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 15 -->
+            <div class="question-container" data-question="15">
+                <div class="question">
+                    🌟 Quin és el missatge principal de tot aquest enfocament de criança?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Ser perfecte en tot moment
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Construir autoritat des de la connexió, equilibrant límits i amor
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Que els nens decideixin tot per ells mateixos
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>L'objectiu és ser una guía segura que combina amor incondicional amb límits clars. Els nens necessiten estructura i connexió per desenvolupar-se sanament i sentir-se segurs.</p>
+                </div>
+            </div>
+
+            <!-- Botons de navegació -->
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="previousQuestion()" disabled>Anterior</button>
+                <button class="nav-btn" id="nextBtn" onclick="nextQuestion()" disabled>Següent</button>
+            </div>
+        </div>
+
+        <!-- Resultats finals -->
+        <div class="results-container" id="resultsContainer">
+            <h2>🎉 Quiz Completat!</h2>
+            <div class="results-score" id="finalScore">0/15</div>
+            <div class="results-message" id="resultsMessage"></div>
+            <button class="restart-btn" onclick="restartQuiz()">Tornar a Començar</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestionIndex = 0;
+        let totalQuestions = 15;
+        let score = 0;
+        let answers = [];
+        let questionAnswered = false;
+
+        // Respostes correctes
+        const correctAnswers = {
+            1: 'b', 2: 'a', 3: 'b', 4: 'b', 5: 'c',
+            6: 'b', 7: 'b', 8: 'a', 9: 'b', 10: 'b',
+            11: 'b', 12: 'b', 13: 'b', 14: 'a', 15: 'b'
+        };
+
+        // Inicialitzar quiz
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('totalQuestions').textContent = totalQuestions;
+            updateProgress();
+            setupAnswerButtons();
+        });
+
+        function setupAnswerButtons() {
+            const answerBtns = document.querySelectorAll('.answer-btn');
+            answerBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (questionAnswered) return;
+                    
+                    selectAnswer(this);
+                });
+            });
+        }
+
+        function selectAnswer(selectedBtn) {
+            const questionContainer = document.querySelector('.question-container.active');
+            const questionNum = parseInt(questionContainer.dataset.question);
+            const selectedAnswer = selectedBtn.dataset.answer;
+            const correctAnswer = correctAnswers[questionNum];
+            
+            // Marcar com respondida
+            questionAnswered = true;
+            
+            // Deshabilitar tots els botons
+            const answerBtns = questionContainer.querySelectorAll('.answer-btn');
+            answerBtns.forEach(btn => {
+                btn.style.pointerEvents = 'none';
+                
+                if (btn.dataset.answer === correctAnswer) {
+                    btn.classList.add('correct');
+                } else if (btn === selectedBtn && selectedAnswer !== correctAnswer) {
+                    btn.classList.add('incorrect');
+                }
+            });
+            
+            // Guardar resposta
+            answers[questionNum] = selectedAnswer;
+            
+            // Incrementar puntuació si és correcta
+            if (selectedAnswer === correctAnswer) {
+                score++;
+            }
+            
+            // Mostrar explicació
+            const explanation = questionContainer.querySelector('.explanation');
+            explanation.classList.add('show');
+            
+            // Habilitar botó següent
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < totalQuestions - 1) {
+                // Ocultar pregunta actual
+                document.querySelector('.question-container.active').classList.remove('active');
+                
+                // Mostrar següent pregunta
+                currentQuestionIndex++;
+                const nextQuestion = document.querySelector(`[data-question="${currentQuestionIndex + 1}"]`);
+                nextQuestion.classList.add('active');
+                
+                // Reset estat
+                questionAnswered = false;
+                document.getElementById('nextBtn').disabled = true;
+                document.getElementById('prevBtn').disabled = false;
+                
+                updateProgress();
+                
+                // Configurar nous botons de resposta
+                setTimeout(() => {
+                    const newAnswerBtns = nextQuestion.querySelectorAll('.answer-btn');
+                    newAnswerBtns.forEach(btn => {
+                        btn.style.pointerEvents = 'auto';
+                        btn.classList.remove('selected', 'correct', 'incorrect');
+                    });
+                }, 100);
+            } else {
+                // Mostrar resultats
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                // Ocultar pregunta actual
+                document.querySelector('.question-container.active').classList.remove('active');
+                
+                // Mostrar pregunta anterior
+                currentQuestionIndex--;
+                const prevQuestion = document.querySelector(`[data-question="${currentQuestionIndex + 1}"]`);
+                prevQuestion.classList.add('active');
+                
+                updateProgress();
+                updateNavButtons();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+        }
+
+        function updateNavButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            
+            // Comprovar si la pregunta actual ha estat respondida
+            const currentQuestion = currentQuestionIndex + 1;
+            const hasAnswered = answers[currentQuestion] !== undefined;
+            document.getElementById('nextBtn').disabled = !hasAnswered;
+        }
+
+        function showResults() {
+            // Ocultar contingut del quiz
+            document.querySelector('.quiz-content').style.display = 'none';
+            
+            // Mostrar resultats
+            const resultsContainer = document.getElementById('resultsContainer');
+            resultsContainer.classList.add('show');
+            
+            // Actualitzar puntuació
+            document.getElementById('finalScore').textContent = `${score}/${totalQuestions}`;
+            
+            // Missatge segons puntuació
+            let message = '';
+            const percentage = (score / totalQuestions) * 100;
+            
+            if (percentage >= 90) {
+                message = '🌟 Excel·lent! Domines perfectament els principis de la criança amb autoritat. Ets una guia segura per als teus fills!';
+            } else if (percentage >= 75) {
+                message = '👏 Molt bé! Tens una bona comprensió dels conceptes. Amb una mica més de pràctica seràs una experta!';
+            } else if (percentage >= 60) {
+                message = '👍 Bona feina! Tens les bases però encara pots millorar. Revisa els conceptes i torna a intentar-ho!';
+            } else {
+                message = '📚 No et desanimis! Tots aprenem a ritmes diferents. Revisa el material i torna-ho a provar. Tu pots!';
+            }
+            
+            document.getElementById('resultsMessage').textContent = message;
+        }
+
+        function restartQuiz() {
+            // Reset variables
+            currentQuestionIndex = 0;
+            score = 0;
+            answers = [];
+            questionAnswered = false;
+            
+            // Ocultar resultats
+            document.getElementById('resultsContainer').classList.remove('show');
+            
+            // Mostrar contingut del quiz
+            document.querySelector('.quiz-content').style.display = 'block';
+            
+            // Reset preguntes
+            document.querySelectorAll('.question-container').forEach((container, index) => {
+                container.classList.remove('active');
+                if (index === 0) {
+                    container.classList.add('active');
+                }
+                
+                // Reset botons de resposta
+                container.querySelectorAll('.answer-btn').forEach(btn => {
+                    btn.style.pointerEvents = 'auto';
+                    btn.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                // Ocultar explicacions
+                container.querySelector('.explanation').classList.remove('show');
+            });
+            
+            // Reset navegació
+            document.getElementById('prevBtn').disabled = true;
+            document.getElementById('nextBtn').disabled = true;
+            
+            updateProgress();
+        }
+    </script>
+</body>
+</html>

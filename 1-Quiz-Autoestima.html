@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Complet: Autocura i Connexió Interna</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: white;
+            padding: 40px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            font-weight: 300;
+        }
+
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            font-style: italic;
+        }
+
+        .score-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .score-item {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .score-item h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .score-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #764ba2;
+        }
+
+        .progress-bar {
+            background: #ecf0f1;
+            border-radius: 25px;
+            height: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress {
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 25px;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .question-card.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .question-category {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .answer-option {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border: 3px solid transparent;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .answer-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+        .answer-option.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #2c3e50;
+        }
+
+        .answer-option.correct {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            border-color: #1e8449;
+        }
+
+        .answer-option.incorrect {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border-color: #a93226;
+        }
+
+        .answer-option.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .answer-letter {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .selected .answer-letter,
+        .correct .answer-letter,
+        .incorrect .answer-letter {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .explanation {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 5px solid #3498db;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .explanation h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn.secondary {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        }
+
+        .results {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .results h2 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .final-score {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .excellent { color: #2ecc71; }
+        .good { color: #f39c12; }
+        .needs-improvement { color: #e74c3c; }
+
+        .performance-message {
+            font-size: 1.3em;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .tips-section {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .tips-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .tips-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .tips-section li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .tips-section li:before {
+            content: "💡";
+            position: absolute;
+            left: 0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .question-text {
+                font-size: 1.2em;
+            }
+            
+            .score-section {
+                flex-direction: column;
+            }
+            
+            .quiz-container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="header">
+            <h1>🌟 Quiz Complet: Autocura i Connexió Interna</h1>
+            <div class="subtitle">Avalua els teus coneixements sobre prioritzar-te, connectar amb tu mateixa i trobar l'equilibri</div>
+        </div>
+
+        <div class="score-section">
+            <div class="score-item">
+                <h3>Pregunta Actual</h3>
+                <div class="score-number" id="current-question">1</div>
+            </div>
+            <div class="score-item">
+                <h3>Puntuació</h3>
+                <div class="score-number" id="score">0</div>
+            </div>
+            <div class="score-item">
+                <h3>% Correctes</h3>
+                <div class="score-number" id="percentage">0%</div>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <div id="question-container">
+            <!-- Les preguntes es generaran aquí -->
+        </div>
+
+        <div class="controls">
+            <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Següent Pregunta</button>
+            <button class="btn secondary" onclick="restartQuiz()">Reiniciar Quiz</button>
+        </div>
+
+        <div class="results" id="results">
+            <!-- Resultats finals -->
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                category: "Concepte Fonamental",
+                question: "Segons la metàfora de l'arbre, què passa si continues donant-ho tot sense cuidar-te?",
+                options: [
+                    "L'arbre es fa més fort",
+                    "L'arbre es trenca i tot el que sostenia es ve avall",
+                    "No passa res important",
+                    "Els altres aprenen a ser independents"
+                ],
+                correct: 1,
+                explanation: "Si ets l'arbre que sostén tot (família, feina, responsabilitats) i no et cuides, al final l'arbre es trenca. Això no només t'afecta a tu, sinó que té conseqüències terribles per a tots els que t'envolten."
+            },
+            {
+                category: "Prioritats",
+                question: "Per què és tan important dedicar-te temps a tu mateixa?",
+                options: [
+                    "Perquè ets egoísta si no ho fas",
+                    "Perquè tu ets la teva prioritat i responsabilitat",
+                    "Per impressionar els altres",
+                    "Només si tens temps lliure"
+                ],
+                correct: 1,
+                explanation: "Tu ets la teva prioritat i responsabilitat. Ningú més ho farà per tu. Has de prendre la decisió conscient de dedicar-te temps i atenció, encara que sigui un petit percentatge."
+            },
+            {
+                category: "Delegació",
+                question: "Quina és la manera correcta de comunicar la necessitat d'ajuda?",
+                options: [
+                    "'No puc més, estic esgotada'",
+                    "'Tu no fas res mai'",
+                    "'Cariño, t'importaria ocupar-te de la cena dos vegades per setmana? Així puc tenir un rato per a mi'",
+                    "'Sempre he de fer-ho tot jo'"
+                ],
+                correct: 2,
+                explanation: "Cal expressar les necessitats de forma clara i directa, sense queixar-se, sense fer sentir culpable l'altre. No es tracta d'acusar, sinó de demanar col·laboració."
+            },
+            {
+                category: "Exigències",
+                question: "Què significa 'rebaixar les exigències' segons el document?",
+                options: [
+                    "Deixar de fer les coses importants",
+                    "Tenir la casa 'suficientment' ordenada, menjar senzill alguns dies",
+                    "Abandonar totes les responsabilitats",
+                    "No cuidar mai més la casa"
+                ],
+                correct: 1,
+                explanation: "Rebaixar les exigències significa permetre un grau d'imperfecció tolerable: casa 'suficientment' ordenada, menjar senzill alguns dies, reduir activitats que t'esgoten. Es tracta de trobar l'equilibri entre la perfecció i el caos."
+            },
+            {
+                category: "Connexió Interna",
+                question: "Per connectar amb tu mateixa, què recomanem sobre els moments de no fer res?",
+                options: [
+                    "És una pèrdua de temps",
+                    "Buscar 3-5 minuts per simplement estar, com prendre un cafè tranquil·la",
+                    "Només si tens moltes hores lliures",
+                    "No és necessari"
+                ],
+                correct: 1,
+                explanation: "És vital buscar petits moments de 3-5 minuts per simplement estar: prendre un cafè tranquil·la, seure al sofà, mirar per la finestra. Aquests moments permeten que la teva veu interior emergeixi."
+            },
+            {
+                category: "Tecnologia",
+                question: "Quina estratègia específica es recomana per desconnectar de la tecnologia?",
+                options: [
+                    "Utilitzar més el mòbil",
+                    "Deixar el mòbil en una caixa al arribar a casa",
+                    "Estar sempre connectada",
+                    "Comprar més dispositius"
+                ],
+                correct: 1,
+                explanation: "Es recomana deixar el mòbil en una caixa al arribar a casa, no portar-lo al dormitori, considerar un dia sense tecnologia i deixar-lo a casa per trajectes curts com anar a buscar els nens."
+            },
+            {
+                category: "Gestió Mental",
+                question: "Com pots 'buidar la ment' segons el document?",
+                options: [
+                    "Memoritzar més coses",
+                    "Apuntar totes les tasques i recordatoris per treure'ls del cap",
+                    "Pensar constantment en el futur",
+                    "Mantenir-ho tot a la memòria"
+                ],
+                correct: 1,
+                explanation: "Apuntar totes les tasques i recordatoris en un quadern o mòbil allibera un pes enorme del cap. Aquesta 'càrrega mental' t'impedeix connectar amb tu mateixa."
+            },
+            {
+                category: "Presència",
+                question: "Què has de fer en moments d'espera (parada bus, consulta metge)?",
+                options: [
+                    "Mirar sempre el mòbil",
+                    "Aprendre a estar present, observar, escoltar",
+                    "Planificar constantment el futur",
+                    "Omplir-ho amb distraccions"
+                ],
+                correct: 1,
+                explanation: "En lloc d'omplir cada moment d'espera amb distraccions, aprèn a estar present. Observa l'entorn, escolta, acompanya en silenci. Practica l'aquí i ara."
+            },
+            {
+                category: "Naturalesa i Cos",
+                question: "Per connectar amb el teu cos, què pots fer si no t'agrada el gimnàs?",
+                options: [
+                    "No fer mai exercici",
+                    "Caminar més, baixar abans del transport, fer exercici amb els fills",
+                    "Obligar-te a anar al gimnàs",
+                    "Només fer esport professional"
+                ],
+                correct: 1,
+                explanation: "Si no t'agrada el gimnàs pots caminar més, baixar abans del transport públic, fer exercici amb els fills (patins, bici, saltar), ballar a casa. L'important és moure el cos."
+            },
+            {
+                category: "Jutjaments",
+                question: "Quan et sents jutjada pels altres, què has de recordar?",
+                options: [
+                    "Que tothom està sempre jutjant-te",
+                    "Que la majoria de gent està ocupada amb els seus problemes",
+                    "Que has de ser perfecta",
+                    "Que has de complaure a tothom"
+                ],
+                correct: 1,
+                explanation: "La majoria de persones estan ocupades amb els seus propis problemes i fills. Sovint et jutges tu mateixa més que els altres. A vegades una mirada pot ser de comprensió perquè han passat pel mateix."
+            },
+            {
+                category: "Autoestima",
+                question: "Per fortalèixer l'autoestima, què has de fer?",
+                options: [
+                    "Ser la teva millor amiga: estimar-te, respectar-te, acceptar-te",
+                    "Criticar-te constantment",
+                    "Comparar-te amb altres",
+                    "Buscar només aprovació externa"
+                ],
+                correct: 0,
+                explanation: "Has de ser la teva millor amiga: estimar-te, respectar-te i acceptar-te amb les teves imperfeccions. Reconeix les teves qualitats positives. Una autoestima forta et protegeix dels jutjaments."
+            },
+            {
+                category: "Imperfecció",
+                question: "Què ensenyes als fills quan no ets perfecta?",
+                options: [
+                    "Que ets una mala mare",
+                    "A aguantar-se, esperar i que ningú és perfecte",
+                    "Que no t'importa res",
+                    "A ser irresponsables"
+                ],
+                correct: 1,
+                explanation: "Quan no arribes al 100% ensenyes lliçons vitals: a aguantar-se, esperar, que ningú és perfecte, a generar recursos propis. No hi ha pares perfectes, però sí suficientment bons."
+            },
+            {
+                category: "Canvi de Prioritats",
+                question: "Quin canvi fonamental proposa el document?",
+                options: [
+                    "Del SER al FER",
+                    "Del FER al SER i ESTAR",
+                    "De les persones a les coses",
+                    "De la qualitat a la quantitat"
+                ],
+                correct: 1,
+                explanation: "Cal passar del 'FER' (tasques, coses materials) al 'SER' i 'ESTAR' (benestar personal, connexió). És més important connectar amb els fills llegint un conte que tenir el terra impecable."
+            },
+            {
+                category: "Planificació",
+                question: "Com has d'enfocar la planificació segons la metàfora del globus?",
+                options: [
+                    "Planificar constantment el futur",
+                    "Portar el 'globus' dels pensaments de tornada al moment actual",
+                    "Viure sempre en el passat",
+                    "No planificar mai res"
+                ],
+                correct: 1,
+                explanation: "Tendim a estar sempre en el futur (què he de fer demà, a les 3, el dissabte). Cal portar el 'globus' dels pensaments de tornada a l'aquí i ara. Pots preocupar-te quan sigui el moment de resoldre."
+            },
+            {
+                category: "Passat",
+                question: "Com has de gestionar el teu passat per avançar?",
+                options: [
+                    "Oblidar-lo completament",
+                    "Reconèixer-lo, acceptar-lo i prendre les regnes del present",
+                    "Viure sempre ancorada en ell",
+                    "Culpar-lo de tot"
+                ],
+                correct: 1,
+                explanation: "Has de reconèixer el passat, acceptar que va passar però que ara estàs en un moment diferent. No t'ancloris però tampoc l'oblidis. Pren les regnes i decideix conscientment com vols ser ara."
+            },
+            {
+                category: "Implementació",
+                question: "Per passar del reconeixement a l'acció, quin és el primer pas dels 5 proposats?",
+                options: [
+                    "Canviar prioritats",
+                    "Fer coses que t'agradin",
+                    "Pedir ajuda i delegar",
+                    "Rebaixar exigències"
+                ],
+                correct: 2,
+                explanation: "El primer dels 5 passos és 'Pedir ajuda i delegar'. Has de buscar tasques per assignar a parella, pares, fills o contractar ajuda. L'objectiu és que altres es responsabilitzin de tasques repetitives."
+            },
+            {
+                category: "Mindfulness",
+                question: "Què significa practicar mindfulness en el dia a dia?",
+                options: [
+                    "Meditar 2 hores diàries",
+                    "Prestar atenció al moment present sense jutjar (quan et rentes dents, menges, camines)",
+                    "Només pensar en coses positives",
+                    "Evitar totes les emocions negatives"
+                ],
+                correct: 1,
+                explanation: "El mindfulness consisteix a prestar atenció al moment present sense jutjar-lo. Es pot practicar rentant-se les dents, menjant, caminant. Es tracta de fer les coses amb consciència."
+            },
+            {
+                category: "Responsabilitat Familiar",
+                question: "Com pots implicar els fills en les tasques domèstiques?",
+                options: [
+                    "No fer-los fer res fins que siguin adults",
+                    "Donar-los petites responsabilitats adaptades a la seva edat",
+                    "Que facin totes les tasques de casa",
+                    "Només ajudar si volen"
+                ],
+                correct: 1,
+                explanation: "Des de petits pots donar-los responsabilitats adaptades: rerrcollit de joguines, ajudar a posar taula, doblar roba. Això no només et treu feina, sinó que els ensenya responsabilitat i col·laboració."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+        let userAnswers = [];
+
+        function loadQuestion() {
+            const questionContainer = document.getElementById('question-container');
+            const question = questions[currentQuestion];
+            
+            questionContainer.innerHTML = `
+                <div class="question-card">
+                    <div class="question-number">Pregunta ${currentQuestion + 1} de ${questions.length}</div>
+                    <div class="question-category">${question.category}</div>
+                    <div class="question-text">${question.question}</div>
+                    <div id="options">
+                        ${question.options.map((option, index) => `
+                            <div class="answer-option" onclick="selectAnswer(${index})">
+                                <span class="answer-letter">${String.fromCharCode(65 + index)}</span>
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="explanation">
+                        <h4>💡 Explicació:</h4>
+                        <p>${question.explanation}</p>
+                    </div>
+                </div>
+            `;
+            
+            answered = false;
+            document.getElementById('next-btn').disabled = true;
+            updateProgress();
+        }
+
+        function selectAnswer(selectedIndex) {
+            if (answered) return;
+            
+            answered = true;
+            const question = questions[currentQuestion];
+            const options = document.querySelectorAll('.answer-option');
+            
+            // Deshabilitar totes les opcions
+            options.forEach(option => option.classList.add('disabled'));
+            
+            // Marcar la resposta seleccionada
+            options[selectedIndex].classList.add('selected');
+            
+            // Mostrar la resposta correcta
+            options[question.correct].classList.add('correct');
+            
+            // Si la resposta és incorrecta, marcar-la
+            if (selectedIndex !== question.correct) {
+                options[selectedIndex].classList.add('incorrect');
+            } else {
+                score++;
+            }
+            
+            // Guardar la resposta
+            userAnswers[currentQuestion] = {
+                selected: selectedIndex,
+                correct: question.correct,
+                isCorrect: selectedIndex === question.correct
+            };
+            
+            // Mostrar explicació
+            document.getElementById('explanation').classList.add('show');
+            
+            // Habilitar botó següent
+            document.getElementById('next-btn').disabled = false;
+            
+            updateScore();
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+                document.getElementById('current-question').textContent = currentQuestion + 1;
+            } else {
+                showResults();
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / questions.length) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            const percentage = Math.round((score / (currentQuestion + 1)) * 100);
+            document.getElementById('percentage').textContent = percentage + '%';
+        }
+
+        function showResults() {
+            const percentage = Math.round((score / questions.length) * 100);
+            let performanceClass, performanceMessage, tips;
+            
+            if (percentage >= 85) {
+                performanceClass = 'excellent';
+                performanceMessage = '🌟 Excel·lent! Tens un domini excepcional dels conceptes d\'autocura i connexió interna. Estàs preparat/da per implementar aquests canvis.';
+                tips = [
+                    'Comença a aplicar els 5 passos de forma gradual',
+                    'Tria un concepte per treballar cada setmana',
+                    'Comparteix aquests coneixements amb la teva parella',
+                    'Fes un seguiment dels teus progressos'
+                ];
+            } else if (percentage >= 70) {
+                performanceClass = 'good';
+                performanceMessage = '👍 Molt bé! Tens una bona comprensió dels conceptes. Amb una mica més de pràctica podràs dominar-los completament.';  
+                tips = [
+                    'Revisa les categories on has tingut més dificultats',
+                    'Practica amb la guia d\'acordions per aprofundir',
+                    'Comença implementant els conceptes més clars per a tu',
+                    'Torna a fer el quiz després de repassar'
+                ];
+            } else {
+                performanceClass = 'needs-improvement';
+                performanceMessage = '📚 Cal més pràctica! Et recomano revisar el material detingudament abans d\'intentar implementar els canvis.';
+                tips = [
+                    'Llegeix la guia interactiva secció per secció',
+                    'Practica amb el joc de cartes per familiaritzar-te',
+                    'Centra\'t primer en entendre els conceptes bàsics',
+                    'Dedica més temps a reflexionar sobre cada tema'
+                ];
+            }
+            
+            const resultsHTML = `
+                <h2>Resultats Finals</h2>
+                <div class="final-score ${performanceClass}">${score}/${questions.length}</div>
+                <div class="performance-message ${performanceClass}">${performanceMessage}</div>
+                
+                <div class="tips-section">
+                    <h3>💡 Recomanacions per continuar:</h3>
+                    <ul>
+                        ${tips.map(tip => `<li>${tip}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <button class="btn" onclick="restartQuiz()">🔄 Repetir Quiz</button>
+                    <button class="btn secondary" onclick="showReview()">📖 Revisar Respostes</button>
+                </div>
+            `;
+            
+            document.getElementById('question-container').style.display = 'none';
+            document.querySelector('.controls').style.display = 'none';
+            document.getElementById('results').innerHTML = resultsHTML;
+            document.getElementById('results').classList.add('show');
+        }
+
+        function showReview() {
+            let reviewHTML = '<h2>📝 Revisió Detallada de Respostes</h2><div style="text-align: left;">';
+            
+            questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer?.isCorrect || false;
+                
+                reviewHTML += `
+                    <div style="background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; border-left: 5px solid ${isCorrect ? '#2ecc71' : '#e74c3c'};">
+                        <div style="background: ${isCorrect ? '#d5f4e6' : '#fadbd8'}; padding: 10px; border-radius: 10px; margin-bottom: 15px;">
+                            <strong>Categoria:</strong> ${question.category}
+                        </div>
+                        <h4>Pregunta ${index + 1}: ${question.question}</h4>
+                        <p><strong>La teva resposta:</strong> ${userAnswer ? question.options[userAnswer.selected] : 'No resposta'} ${isCorrect ? '✅' : '❌'}</p>
+                        <p><strong>Resposta correcta:</strong> ${question.options[question.correct]}</p>
+                        <p><strong>Explicació:</strong> ${question.explanation}</p>
+                    </div>
+                `;
+            });
+            
+            reviewHTML += `
+                <div style="margin-top: 30px; text-align: center;">
+                    <button class="btn" onclick="restartQuiz()">🔄 Repetir Quiz</button>
+                </div>
+            </div>`;
+            
+            document.getElementById('results').innerHTML = reviewHTML;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            answered = false;
+            userAnswers = [];
+            
+            document.getElementById('current-question').textContent = '1';
+            document.getElementById('score').textContent = '0';
+            document.getElementById('percentage').textContent = '0%';
+            
+            document.getElementById('question-container').style.display = 'block';
+            document.querySelector('.controls').style.display = 'block';
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('results').style.display = 'none';
+            
+            loadQuestion();
+        }
+
+        // Inicialitzar el quiz
+        loadQuestion();
+    </script>
+</body>
+</html>

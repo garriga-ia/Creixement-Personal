@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Simplificar la Vida Familiar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 50%, #8e44ad 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2d3436;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .quiz-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .quiz-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Barra de progrés */
+        .progress-container {
+            background: rgba(255, 255, 255, 0.2);
+            height: 8px;
+            margin-top: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #e84393, #fd79a8);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Contingut del quiz */
+        .quiz-content {
+            padding: 40px;
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            color: #2d3436;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .answer-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #f1f2f6;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            color: #2d3436;
+            font-weight: 500;
+        }
+
+        .answer-btn:hover {
+            border-color: #a29bfe;
+            background: rgba(162, 155, 254, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .answer-btn.selected {
+            border-color: #6c5ce7;
+            background: linear-gradient(135deg, rgba(108, 92, 231, 0.1), rgba(162, 155, 254, 0.1));
+        }
+
+        .answer-btn.correct {
+            border-color: #00b894;
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.1), rgba(0, 206, 201, 0.1));
+        }
+
+        .answer-btn.incorrect {
+            border-color: #e84393;
+            background: linear-gradient(135deg, rgba(232, 67, 147, 0.1), rgba(253, 121, 168, 0.1));
+        }
+
+        /* Explicació */
+        .explanation {
+            display: none;
+            background: linear-gradient(120deg, rgba(162, 155, 254, 0.15), rgba(142, 68, 173, 0.15));
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border-left: 5px solid #a29bfe;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .explanation h4 {
+            color: #6c5ce7;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .explanation p {
+            line-height: 1.6;
+            color: #2d3436;
+        }
+
+        /* Botons de navegació */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #e84393, #fd79a8);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn:disabled {
+            background: #ddd;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Resultats finals */
+        .results-container {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .results-container.show {
+            display: block;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .results-score {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe, #8e44ad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+
+        .results-message {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            color: #2d3436;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .quiz-container {
+                margin: 10px;
+            }
+
+            .quiz-header {
+                padding: 20px;
+            }
+
+            .quiz-header h1 {
+                font-size: 2rem;
+            }
+
+            .quiz-content {
+                padding: 20px;
+            }
+
+            .question {
+                font-size: 1.1rem;
+            }
+
+            .answer-btn {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1>🌸 Quiz: Simplificar la Vida Familiar</h1>
+            <p>Avalua els teus coneixements sobre joc lliure, natura i simplificació familiar</p>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text">
+                <span id="currentQuestion">1</span> de <span id="totalQuestions">20</span> preguntes
+            </div>
+        </div>
+
+        <div class="quiz-content">
+            <!-- Pregunta 1 -->
+            <div class="question-container active" data-question="1">
+                <div class="question">
+                    🎪 Què és el joc lliure i per què és important?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Activitats dirigides per adults amb objectius educatius
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Jugar sense direcció constant dels adults, embrutar-se, fer coses imperfectes
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Només jugar amb joguines educatives i estructurades
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>El joc lliure permet als nens embrutar-se, mullar-se, fer coses imperfectes, organitzar jocs complexos. Els nens se senten lliures, capaços i dueños del seu món, desenvolupant ment, emocions i cervell sense intervenció constant.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 2 -->
+            <div class="question-container" data-question="2">
+                <div class="question">
+                    🌿 Quins són els beneficis del contacte amb la natura?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Només serveix per fer exercici físic
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Efecte sanador, connexió amb un mateix, fomenta descobriment i asombro
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        És igual que jugar a casa amb joguines
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>La natura té un efecte sanador, ens connecta amb nosaltres mateixos, ofereix possibilitats infinites d'activitats, fomenta el descobriment i l'asombro. Els dona sensació de "aquest és el meu lloc al món".</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 3 -->
+            <div class="question-container" data-question="3">
+                <div class="question">
+                    🎨 Com ha de participar l'adult en les manualitats familiars?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Dirigir la activitat i assegurar-se que quedi perfecte
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Ser un facilitador: ajudar amb materials i no jutjar el resultat
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Fer la manualitat per ells perquè quedi millor
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>L'adult no cal que sigui expert. Basta ser facilitador, ajudant amb materials i resolent petits problemes. És crucial no jutjar el resultat sinó l'esforç, iniciant diàleg positiu sobre el seu treball.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 4 -->
+            <div class="question-container" data-question="4">
+                <div class="question">
+                    📚 Per què és important llegir contes amb els nens?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Només per aprendre a llegir més ràpid
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Obre la ment, connecta amb emocions, enriqueix llenguatge i crea connexió
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Només és útil per nens que no saben llegir
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Llegir contes obre la ment a possibilitats, connecta amb emocions i pors, enriqueix el llenguatge, fa més intel·ligents. Crea connexió fins i tot si ja llegeixen sols. Les històries ajuden a "sobreviure en el món".</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 5 -->
+            <div class="question-container" data-question="5">
+                <div class="question">
+                    🏃‍♀️ Com s'ha de fomentar el moviment lliure en els nens?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Deixar que es moguin, trepin, saltin i afrontin petits reptes físics
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Només activitats dirigides i controlades sempre
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Evitar que grimpin o corrin per seguretat
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: A</h4>
+                    <p>Cal deixar-los moure's lliurement, grimpar, saltar i afrontar petits reptes físics si semblen preparats. Això desenvolupa equilibri, força, agilitat i confiança en si mateixos.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 6 -->
+            <div class="question-container" data-question="6">
+                <div class="question">
+                    📱 Quina és la posició del document respecte al temps de pantalla?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Les pantalles són bones per al desenvolupament infantil
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Cal reduir dràsticament el temps de pantalla en totes les edats
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Només importa en nens menors de 3 anys
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>És fonamental reduir dràsticament el temps de pantalla en totes les edats. Els humans estem dissenyats per créixer en contacte amb el món real, objectes i persones. L'exposició excessiva pot portar més problemes que beneficis.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 7 -->
+            <div class="question-container" data-question="7">
+                <div class="question">
+                    🎭 Com començar a evitar que els fills siguin capriciosos?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Castigar-los cada vegada que demanen alguna cosa
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Començar pel propi comportament: modificar hàbits de consum de l'adult
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Comprar-los tot el que vulguin perquè no facin capricis
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Si tu ets capriciós, els teus fills també ho seran. Cal modelar una vida menys associada al consum: comprar només el necessari, seguir llistes, no comprar per impuls. Ser l'exemple que vols que segueixin.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 8 -->
+            <div class="question-container" data-question="8">
+                <div class="question">
+                    🤗 Com gestionar quan un fill demana alguna cosa que no necessita?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Comprar-li-ho per evitar conflictes
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Dir que no, acompanyar la frustració i validar sentiments sense cedir
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Ignorar la petició completament
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Mantenir-se tranquil, acompanyar en la frustració ("És frustrante quan no pots tenir el que vols"), abraçar i validar sentiments, però mantenir fermament la decisió de no comprar.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 9 -->
+            <div class="question-container" data-question="9">
+                <div class="question">
+                    🎁 Com s'ha de premiar l'esforç i les bones actituds?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Amb dolços i objectes materials
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Amb paraules de reconeixement, abraçades i connexió emocional
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Amb diners per comprar el que vulguin
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Mai premiar amb coses o menjar. Això ensenya que l'esforç es fa per recompenses externes. L'esforç s'ha de valorar amb reconeixement, abraçades i connexió emocional genuïna.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 10 -->
+            <div class="question-container" data-question="10">
+                <div class="question">
+                    🧸 Què passa quan els nens tenen massa joguines?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Són més creatius i feliços
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Només juguen amb uns pocs i la resta es converteix en contaminació visual
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Aprenen a valorar més les coses
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Quan hi ha muntanges de joguines, només juguen amb uns pocs i la resta es converteix en "contaminació visual" i trastos que ocupen espai, generen desordre i treuen pau. Menys joguines = més creativitat.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 11 -->
+            <div class="question-container" data-question="11">
+                <div class="question">
+                    ✅ Quines joguines és millor mantenir?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Només joguines electròniques amb llums i sons
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Pintures, llibres, materials oberts, pilotes, jocs de construcció
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Només joguines de personatges de pel·lícules
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Millors joguines: pintures i materials creatius, llibres, materials oberts (teles, fils), pilotes, puzzles, jocs de construcció, disfresses. Fomenten creativitat, joc lliure i desenvolupament.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 12 -->
+            <div class="question-container" data-question="12">
+                <div class="question">
+                    ❌ Quines joguines s'haurien d'eliminar?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Llibres i materials creatius
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Joguines trencades, amb llums/sorolls, de pel·lícules comercials
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Jocs de construcció i puzzles
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Eliminar: joguines trencades, repetides, amb llums i sorolls forts (sobreestimulants), de pel·lícules comercials (limiten creativitat), amb valors contraris als familiars, que gairebé no s'usen.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 13 -->
+            <div class="question-container" data-question="13">
+                <div class="question">
+                    👚 Per què és beneficiós reduir la quantitat de roba dels nens?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Perquè la roba és cara
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Massa opcions generen decisions fatigants i pot ser aclaparador
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        No hi ha cap benefici real
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Amb massa roba, els nens tenen massa decisions diàries ("Què em poso?") que pot ser aclaparador i generar frustració. Menys opcions = menys estrès matinal i més facilitat per escollir.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 14 -->
+            <div class="question-container" data-question="14">
+                <div class="question">
+                    ⚽ Quins són els senyals que un nen està sobreestimulat amb activitats?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Està sempre content i obeeix tot
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Estan "insoportables", repten constantment, no escolten
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Demana fer més activitats
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Símptomes de sobreestimulació: estan insoportables, repten constantment, no escolten, agressivitat o hiperactivitat aparent. Necessiten temps per estar a casa, jugar lliurement i avorrir-se.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 15 -->
+            <div class="question-container" data-question="15">
+                <div class="question">
+                    💭 Per què és important l'avorriment per als nens?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        No és important, s'han de mantenir sempre ocupats
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        És la cuna de la creativitat i moments de connexió profunda
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Només fa que es posin tristos
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Els temps morts i l'avorriment són fonamentals: són la cuna de la creativitat i moments de connexió profunda, contrasten amb el consum constant d'estímuls. Generen idees noves i autoentreteniment.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 16 -->
+            <div class="question-container" data-question="16">
+                <div class="question">
+                    ⏰ Quins beneficis aporten els ritmes i rutines predictibles?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Fan la vida més avorrible
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Donen seguretat, redueixen ansietat i minimitzen conflictes
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Només serveixen per als adults
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Els ritmes senzills i predictibles donen molta seguretat als nens, redueixen ansietat, saben què esperar, minimitzen conflictes i redueixen el "cansament d'elegir" constant.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 17 -->
+            <div class="question-container" data-question="17">
+                <div class="question">
+                    🕯️ Com es pot fer de l'hora del menjar un moment especial?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Menjar sempre davant la televisió
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Posar la taula amb cura, encendre espelma, moment d'agraïment
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Només servir menjar processat ràpid
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Fer del menjar un ritual: evitar aliments molt processats, posar la taula amb cura, encendre una espelma, tenir un moment d'agraïment. Convertir-ho en petita celebració familiar.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 18 -->
+            <div class="question-container" data-question="18">
+                <div class="question">
+                    😴 Quin és l'ideal respecte al son dels nens?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Despertar-los sempre amb despertador
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Que es despertin de forma natural sense despertador
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Que dormin el mínim possible
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Idealment haurien de despertar-se naturalment sense despertador per assegurar que dormen el que necessiten. Si cal despertar-los, necessiten anar a dormir abans. No hi ha res dolent en anar a dormir molt d'hora.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 19 -->
+            <div class="question-container" data-question="19">
+                <div class="question">
+                    🛡️ Com protegir l'espai i món dels nens?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Explicar-los totes les preocupacions d'adults
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Filtrar notícies angustioses, no abocar preocupacions adults, deixar-los jugar en pau
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Dirigir constantment tot el que fan
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Protegir implica: filtrar notícies violentes, no abocar preocupacions d'adults (les adopten com a pròpies), deixar-los en pau quan juguen, permetre que resolguin conflictes propis si no són danyins.</p>
+                </div>
+            </div>
+
+            <!-- Pregunta 20 -->
+            <div class="question-container" data-question="20">
+                <div class="question">
+                    🌸 Quin és el benefici general de simplificar la vida familiar?
+                </div>
+                <div class="answers">
+                    <button class="answer-btn" data-answer="a">
+                        Fa la vida més complexa i interessant
+                    </button>
+                    <button class="answer-btn" data-answer="b">
+                        Més pau, equilibri, menys sobreestimulació i més temps per joc lliure i creativitat
+                    </button>
+                    <button class="answer-btn" data-answer="c">
+                        Només estalvia diners
+                    </button>
+                </div>
+                <div class="explanation">
+                    <h4>✅ Resposta correcta: B</h4>
+                    <p>Simplificar (menys coses, activitats, soroll extern) permet més pau, equilibri, menys sobreestimulació i més temps per joc lliure, connexió i creativitat. Aquestes són les coses que veritablement importen per créixer sans i feliços.</p>
+                </div>
+            </div>
+
+            <!-- Botons de navegació -->
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="previousQuestion()" disabled>Anterior</button>
+                <button class="nav-btn" id="nextBtn" onclick="nextQuestion()" disabled>Següent</button>
+            </div>
+        </div>
+
+        <!-- Resultats finals -->
+        <div class="results-container" id="resultsContainer">
+            <h2>🎉 Quiz Completat!</h2>
+            <div class="results-score" id="finalScore">0/20</div>
+            <div class="results-message" id="resultsMessage"></div>
+            <button class="restart-btn" onclick="restartQuiz()">Tornar a Començar</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestionIndex = 0;
+        let totalQuestions = 20;
+        let score = 0;
+        let answers = [];
+        let questionAnswered = false;
+
+        // Respostes correctes
+        const correctAnswers = {
+            1: 'b', 2: 'b', 3: 'b', 4: 'b', 5: 'a',
+            6: 'b', 7: 'b', 8: 'b', 9: 'b', 10: 'b',
+            11: 'b', 12: 'b', 13: 'b', 14: 'b', 15: 'b',
+            16: 'b', 17: 'b', 18: 'b', 19: 'b', 20: 'b'
+        };
+
+        // Inicialitzar quiz
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('totalQuestions').textContent = totalQuestions;
+            updateProgress();
+            setupAnswerButtons();
+        });
+
+        function setupAnswerButtons() {
+            const answerBtns = document.querySelectorAll('.answer-btn');
+            answerBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (questionAnswered) return;
+                    
+                    selectAnswer(this);
+                });
+            });
+        }
+
+        function selectAnswer(selectedBtn) {
+            const questionContainer = document.querySelector('.question-container.active');
+            const questionNum = parseInt(questionContainer.dataset.question);
+            const selectedAnswer = selectedBtn.dataset.answer;
+            const correctAnswer = correctAnswers[questionNum];
+            
+            // Marcar com respondida
+            questionAnswered = true;
+            
+            // Deshabilitar tots els botons
+            const answerBtns = questionContainer.querySelectorAll('.answer-btn');
+            answerBtns.forEach(btn => {
+                btn.style.pointerEvents = 'none';
+                
+                if (btn.dataset.answer === correctAnswer) {
+                    btn.classList.add('correct');
+                } else if (btn === selectedBtn && selectedAnswer !== correctAnswer) {
+                    btn.classList.add('incorrect');
+                }
+            });
+            
+            // Guardar resposta
+            answers[questionNum] = selectedAnswer;
+            
+            // Incrementar puntuació si és correcta
+            if (selectedAnswer === correctAnswer) {
+                score++;
+            }
+            
+            // Mostrar explicació
+            const explanation = questionContainer.querySelector('.explanation');
+            explanation.classList.add('show');
+            
+            // Habilitar botó següent
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < totalQuestions - 1) {
+                // Ocultar pregunta actual
+                document.querySelector('.question-container.active').classList.remove('active');
+                
+                // Mostrar següent pregunta
+                currentQuestionIndex++;
+                const nextQuestion = document.querySelector(`[data-question="${currentQuestionIndex + 1}"]`);
+                nextQuestion.classList.add('active');
+                
+                // Reset estat
+                questionAnswered = false;
+                document.getElementById('nextBtn').disabled = true;
+                document.getElementById('prevBtn').disabled = false;
+                
+                updateProgress();
+                
+                // Configurar nous botons de resposta
+                setTimeout(() => {
+                    const newAnswerBtns = nextQuestion.querySelectorAll('.answer-btn');
+                    newAnswerBtns.forEach(btn => {
+                        btn.style.pointerEvents = 'auto';
+                        btn.classList.remove('selected', 'correct', 'incorrect');
+                    });
+                }, 100);
+            } else {
+                // Mostrar resultats
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                // Ocultar pregunta actual
+                document.querySelector('.question-container.active').classList.remove('active');
+                
+                // Mostrar pregunta anterior
+                currentQuestionIndex--;
+                const prevQuestion = document.querySelector(`[data-question="${currentQuestionIndex + 1}"]`);
+                prevQuestion.classList.add('active');
+                
+                updateProgress();
+                updateNavButtons();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+        }
+
+        function updateNavButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            
+            // Comprobar si la pregunta actual ha estat respondida
+            const currentQuestion = currentQuestionIndex + 1;
+            const hasAnswered = answers[currentQuestion] !== undefined;
+            document.getElementById('nextBtn').disabled = !hasAnswered;
+        }
+
+        function showResults() {
+            // Ocultar contingut del quiz
+            document.querySelector('.quiz-content').style.display = 'none';
+            
+            // Mostrar resultats
+            const resultsContainer = document.getElementById('resultsContainer');
+            resultsContainer.classList.add('show');
+            
+            // Actualitzar puntuació
+            document.getElementById('finalScore').textContent = `${score}/${totalQuestions}`;
+            
+            // Missatge segons puntuació
+            let message = '';
+            const percentage = (score / totalQuestions) * 100;
+            
+            if (percentage >= 90) {
+                message = '🌟 Excel·lent! Entens perfectament els principis de simplificació familiar. Estàs preparat per crear un entorn más equilibrat i sa per a tota la família!';
+            } else if (percentage >= 75) {
+                message = '🌸 Molt bé! Captes els conceptes clau del joc lliure i la simplificació. Amb aquests coneixements podràs reduir l\'estrès familiar!';
+            } else if (percentage >= 60) {
+                message = '🌱 Bona feina! Tens una comprensió sòlida. Recorda: menys coses i activitats = més pau i creativitat per als nens!';
+            } else {
+                message = '🌿 No et desanimis! La simplificació és un procés gradual. Cada petit canvi cap a menys sobreestimulació és un gran pas endavant!';
+            }
+            
+            document.getElementById('resultsMessage').textContent = message;
+        }
+
+        function restartQuiz() {
+            // Reset variables
+            currentQuestionIndex = 0;
+            score = 0;
+            answers = [];
+            questionAnswered = false;
+            
+            // Ocultar resultats
+            document.getElementById('resultsContainer').classList.remove('show');
+            
+            // Mostrar contingut del quiz
+            document.querySelector('.quiz-content').style.display = 'block';
+            
+            // Reset preguntes
+            document.querySelectorAll('.question-container').forEach((container, index) => {
+                container.classList.remove('active');
+                if (index === 0) {
+                    container.classList.add('active');
+                }
+                
+                // Reset botons de resposta
+                container.querySelectorAll('.answer-btn').forEach(btn => {
+                    btn.style.pointerEvents = 'auto';
+                    btn.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                // Ocultar explicacions
+                container.querySelector('.explanation').classList.remove('show');
+            });
+            
+            // Reset navegació
+            document.getElementById('prevBtn').disabled = true;
+            document.getElementById('nextBtn').disabled = true;
+            
+            updateProgress();
+        }
+    </script>
+</body>
+</html>
